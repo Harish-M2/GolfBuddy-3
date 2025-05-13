@@ -1,0 +1,63 @@
+/* Reset default margins and padding */
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: black; /* Ensure the entire page background is black */
+  color: white; /* Ensure text is visible on the black background */
+  height: 100%; /* Ensure the background covers the full height */
+}
+
+.home-container {
+  text-align: center;
+  padding: 20px;
+  background-color: black; /* Black background */
+  color: white; /* White text for visibility */
+  min-height: 100vh; /* Full viewport height */
+}
+
+.image-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.image-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-button {
+  width: 200px;
+  height: 200px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  transition: transform 0.2s, border-color 0.2s;
+  object-fit: cover; /* Ensures the image fills the button without distortion */
+}
+
+.image-button:hover {
+  transform: scale(1.1);
+  border-color: #007bff;
+}
+
+.image-button-container p {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+img {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+img:hover {
+  transform: scale(1.1);
+  border-color: #007bff;
+}

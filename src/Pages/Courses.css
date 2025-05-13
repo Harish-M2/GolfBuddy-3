@@ -1,0 +1,39 @@
+.courses-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.courses-container label {
+  margin-right: 10px;
+}
+
+.courses-container input,
+.courses-container select {
+  margin: 5px;
+  padding: 5px;
+}
+
+.courses-container button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.courses-container button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.courses-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.courses-container li {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
