@@ -6,7 +6,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardActions,
   Button,
   Dialog,
   DialogTitle,
@@ -14,8 +13,6 @@ import {
   DialogActions,
   TextField,
   IconButton,
-  Chip,
-  Avatar,
   Alert,
   Paper,
   Tabs,
@@ -26,17 +23,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Divider,
-  LinearProgress,
-  Tooltip
+  Divider
 } from '@mui/material';
 import {
   Add,
@@ -44,14 +31,9 @@ import {
   Delete,
   EmojiEvents,
   TrendingUp,
-  TrendingDown,
   Flag,
   Score as ScoreIcon,
-  CalendarToday,
-  Person,
-  LocalFireDepartment,
-  Star,
-  Remove as RemoveIcon
+  CalendarToday
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from '../Components/LoadingSpinner';
