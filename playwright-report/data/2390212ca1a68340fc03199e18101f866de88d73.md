@@ -1,0 +1,210 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e6]
+          - generic [ref=e9]: GolfBuddy
+        - generic [ref=e10]:
+          - button "Home" [ref=e11] [cursor=pointer]:
+            - img [ref=e13]
+            - text: Home
+          - button "Dashboard" [ref=e15] [cursor=pointer]:
+            - img [ref=e17]
+            - text: Dashboard
+          - generic [ref=e19]:
+            - button "Social" [ref=e20] [cursor=pointer]:
+              - img [ref=e22]
+              - text: Social
+              - img [ref=e25]
+            - generic: "0"
+          - button "Golf" [ref=e27] [cursor=pointer]:
+            - img [ref=e29]
+            - text: Golf
+            - img [ref=e33]
+        - generic [ref=e35]:
+          - button "0" [ref=e36] [cursor=pointer]:
+            - generic [ref=e37]:
+              - img [ref=e38]
+              - generic: "0"
+          - paragraph [ref=e40]: Welcome, qa.tester1@testmail.com
+          - button "Q" [ref=e41] [cursor=pointer]:
+            - generic [ref=e42]: Q
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading "🏌️ Discover Golf Courses" [level=1] [ref=e46]
+        - heading "Find the perfect golf course near you for your next round" [level=6] [ref=e47]
+        - button "My Favorites (1)" [ref=e48] [cursor=pointer]:
+          - img [ref=e50]
+          - text: My Favorites (1)
+      - generic [ref=e54] [cursor=pointer]:
+        - generic [ref=e55]:
+          - img [ref=e57]
+          - generic [ref=e59]:
+            - heading "Search Filters" [level=6] [ref=e60]
+            - paragraph [ref=e61]: Find courses in your area
+        - generic [ref=e62]:
+          - generic [ref=e64]:
+            - generic [ref=e65]: Postcode
+            - generic [ref=e66]:
+              - img [ref=e67]
+              - textbox "Postcode" [ref=e69]:
+                - /placeholder: e.g., SW1A 1AA
+                - text: SW1A 1AA
+              - group:
+                - generic: Postcode
+          - generic [ref=e71]:
+            - generic [ref=e72]: Country
+            - generic [ref=e73]:
+              - combobox [ref=e74]: 🇬🇧 United Kingdom
+              - textbox: UK
+              - img
+              - group:
+                - generic: Country
+          - generic [ref=e76]:
+            - generic [ref=e77]: Search Radius
+            - generic [ref=e78]:
+              - combobox [ref=e79]: 10 miles
+              - textbox: "10"
+              - img
+              - group:
+                - generic: Search Radius
+          - button "Find Courses" [ref=e81]:
+            - img [ref=e83]
+            - text: Find Courses
+      - alert [ref=e85]:
+        - img [ref=e87]
+        - generic [ref=e89]: Added to favorites!
+        - button "Close" [ref=e91] [cursor=pointer]:
+          - img [ref=e92]
+      - heading "Found 43 golf courses" [level=6] [ref=e96]
+      - generic [ref=e97]:
+        - generic [ref=e100] [cursor=pointer]:
+          - generic [ref=e102]:
+            - img [ref=e103]
+            - heading "Queen's Park Pitch and Putt" [level=6] [ref=e106]
+            - button "Remove from favorites" [active] [ref=e107]:
+              - img [ref=e108]
+          - generic [ref=e110]:
+            - generic [ref=e111]:
+              - generic [ref=e112]:
+                - img [ref=e113]
+                - paragraph [ref=e115]: Kings Wood Avenue
+              - paragraph [ref=e116]: London, Greater London, England
+              - generic [ref=e117]:
+                - img [ref=e118]
+                - paragraph [ref=e120]: +44 (0)20 8969 5661
+            - separator [ref=e121]
+            - generic [ref=e123]:
+              - img [ref=e124]
+              - generic [ref=e126]: No Range
+        - generic [ref=e129] [cursor=pointer]:
+          - generic [ref=e131]:
+            - img [ref=e132]
+            - heading "Central London Golf Centre" [level=6] [ref=e135]
+            - button "Add to favorites" [ref=e136]:
+              - img [ref=e137]
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - img [ref=e142]
+                - paragraph [ref=e144]: Burntwood Lane
+              - paragraph [ref=e145]: London, Greater London, England
+              - generic [ref=e146]:
+                - img [ref=e147]
+                - paragraph [ref=e149]: +44 (0)20 8871 2468
+            - separator [ref=e150]
+            - generic [ref=e152]:
+              - img [ref=e153]
+              - generic [ref=e155]: Has Range
+        - generic [ref=e158] [cursor=pointer]:
+          - generic [ref=e160]:
+            - img [ref=e161]
+            - heading "Aquarius Golf Club" [level=6] [ref=e164]
+            - button "Add to favorites" [ref=e165]:
+              - img [ref=e166]
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - generic [ref=e170]:
+                - img [ref=e171]
+                - paragraph [ref=e173]: Marmora Road
+              - paragraph [ref=e174]: London, Greater London, England
+              - generic [ref=e175]:
+                - img [ref=e176]
+                - paragraph [ref=e178]: +44 (020) 8693 1626
+            - separator [ref=e179]
+            - generic [ref=e181]:
+              - img [ref=e182]
+              - generic [ref=e184]: No Range
+        - generic [ref=e187] [cursor=pointer]:
+          - generic [ref=e189]:
+            - img [ref=e190]
+            - heading "Hampstead Golf Club" [level=6] [ref=e193]
+            - button "Add to favorites" [ref=e194]:
+              - img [ref=e195]
+          - generic [ref=e197]:
+            - generic [ref=e198]:
+              - generic [ref=e199]:
+                - img [ref=e200]
+                - paragraph [ref=e202]: 82 Winnington Road
+              - paragraph [ref=e203]: London, Greater London, England
+              - generic [ref=e204]:
+                - img [ref=e205]
+                - paragraph [ref=e207]: +44 (0)20 8455 0203
+            - separator [ref=e208]
+            - generic [ref=e210]:
+              - img [ref=e211]
+              - generic [ref=e213]: Has Range
+        - generic [ref=e216] [cursor=pointer]:
+          - generic [ref=e218]:
+            - img [ref=e219]
+            - heading "Dulwich and Sydenham Hill Golf Club" [level=6] [ref=e222]
+            - button "Add to favorites" [ref=e223]:
+              - img [ref=e224]
+          - generic [ref=e226]:
+            - generic [ref=e227]:
+              - generic [ref=e228]:
+                - img [ref=e229]
+                - paragraph [ref=e231]: Grange Lane
+              - paragraph [ref=e232]: London, Greater London, England
+              - generic [ref=e233]:
+                - img [ref=e234]
+                - paragraph [ref=e236]: +44 (0)20 8693 3961
+            - separator [ref=e237]
+            - generic [ref=e239]:
+              - img [ref=e240]
+              - generic [ref=e242]: Has Range
+        - generic [ref=e245] [cursor=pointer]:
+          - generic [ref=e247]:
+            - img [ref=e248]
+            - heading "Highgate Golf Course" [level=6] [ref=e251]
+            - button "Add to favorites" [ref=e252]:
+              - img [ref=e253]
+          - generic [ref=e255]:
+            - generic [ref=e256]:
+              - generic [ref=e257]:
+                - img [ref=e258]
+                - paragraph [ref=e260]: Denewood Road
+              - paragraph [ref=e261]: London, Greater London, England
+              - generic [ref=e262]:
+                - img [ref=e263]
+                - paragraph [ref=e265]: +44 (0)20 8340 1906
+            - separator [ref=e266]
+            - generic [ref=e268]:
+              - img [ref=e269]
+              - generic [ref=e271]: Has Range
+      - generic [ref=e274]:
+        - button "Previous" [disabled]:
+          - generic:
+            - img
+          - text: Previous
+        - paragraph [ref=e275]: 1 of 8
+        - button "Next" [ref=e276] [cursor=pointer]:
+          - text: Next
+          - img [ref=e278]
+  - tooltip "Remove from favorites" [ref=e280]:
+    - generic [ref=e281]: Remove from favorites
+```
