@@ -1,10 +1,13 @@
+/* Modern Golf App Styling */
 .App {
   text-align: center;
+  min-height: 100vh;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.3));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -14,18 +17,45 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #059669 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #f8fafc;
+  position: relative;
+  overflow: hidden;
+}
+
+.App-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
+  z-index: 1;
+}
+
+.App-header > * {
+  position: relative;
+  z-index: 2;
 }
 
 .App-link {
-  color: #61dafb;
+  color: #22d3ee;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.App-link:hover {
+  color: #06b6d4;
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
 }
 
 @keyframes App-logo-spin {
@@ -37,28 +67,132 @@
   }
 }
 
-.App {
-  text-align: center;
+/* Enhanced Material-UI Component Overrides */
+.MuiAppBar-root {
+  background: linear-gradient(135deg, #1e40af 0%, #059669 100%) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
+.MuiCard-root {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  border: 1px solid rgba(226, 232, 240, 0.5) !important;
 }
 
+.MuiCard-root:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.15) !important;
+}
+
+.MuiButton-root {
+  border-radius: 12px !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  transition: all 0.3s ease !important;
+}
+
+.MuiButton-contained {
+  background: linear-gradient(135deg, #1e40af 0%, #059669 100%) !important;
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3) !important;
+}
+
+.MuiButton-contained:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #047857 100%) !important;
+  box-shadow: 0 6px 24px rgba(30, 64, 175, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.MuiTextField-root .MuiOutlinedInput-root {
+  border-radius: 12px !important;
+}
+
+.MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #1e40af !important;
+}
+
+.MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #059669 !important;
+  border-width: 2px !important;
+}
+
+/* Beautiful Select Components */
+.MuiSelect-root {
+  border-radius: 12px !important;
+}
+
+.MuiFormControl-root {
+  margin: 8px !important;
+}
+
+/* Enhanced Typography */
+.MuiTypography-h4 {
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #1e40af, #059669) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  margin-bottom: 2rem !important;
+}
+
+.MuiTypography-h5 {
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+.MuiTypography-h6 {
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+/* Beautiful Grid Layouts */
+.MuiGrid-container {
+  margin-top: 2rem !important;
+}
+
+.MuiGrid-item {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* Legacy tabs styling for compatibility */
 .tabs {
-  margin: 20px;
+  margin: 24px 0;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .tabs button {
-  margin: 0 10px;
-  padding: 10px 20px;
+  background: linear-gradient(135deg, #1e40af 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  margin: 0;
+  padding: 12px 28px;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tabs button:hover,
+.tabs button:focus {
+  background: linear-gradient(135deg, #1d4ed8 0%, #047857 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 24px rgba(30, 64, 175, 0.4);
 }
 
 .tab-content {
-  margin: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
+  margin: 24px 0;
+  padding: 32px;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  color: #1e293b;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
 }

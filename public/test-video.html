@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            border: 2px solid #fff;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Golf Video Test</h1>
+    <div class="video-container">
+        <h2>Test 1: Direct Path</h2>
+        <video controls>
+            <source src="/golfback.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <h2>Test 2: Relative Path</h2>
+        <video controls>
+            <source src="./golfback.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <h2>Test 3: Full URL</h2>
+        <video controls>
+            <source src="http://localhost:3000/golfback.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    
+    <div class="info">
+        <h3>Video File Info:</h3>
+        <p>Expected location: /Users/harish/Documents/Projects/GolfBuddy/public/golfback.mp4</p>
+        <p>Try clicking the videos above to see if they load and play.</p>
+    </div>
+
+    <script>
+        // Test video loading with JavaScript
+        console.log('Testing video paths...');
+        
+        const videos = document.querySelectorAll('video');
+        videos.forEach((video, index) => {
+            video.addEventListener('loadeddata', () => {
+                console.log(`Video ${index + 1} loaded successfully`);
+                console.log('Duration:', video.duration);
+                console.log('Dimensions:', video.videoWidth, 'x', video.videoHeight);
+            });
+            
+            video.addEventListener('error', (e) => {
+                console.error(`Video ${index + 1} failed to load:`, e);
+                console.error('Error code:', video.error?.code);
+                console.error('Error message:', video.error?.message);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -2,14 +2,24 @@
   "name": "buddy",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/Harish-M2/buddy-3.git",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "firebase deploy --only hosting",
+    "test": "npx playwright test --project=chromium",
+    "test:fast": "npx playwright test --project=chromium --workers=100%",
+    "test:smoke": "npx playwright test tests/auth.spec.js -g '1.2' --project=chromium",
+    "test:all": "npx playwright test",
+    "test:ai": "node tests/run-all-tests.js",
+    "test:debug": "npx playwright test --debug",
+    "test:headed": "npx playwright test --headed --project=chromium",
+    "test:report": "npx playwright show-report",
+    "test:ui": "npx playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "firebase-tools": "^14.24.0",
     "gh-pages": "^6.1.1"
   },
   "eslintConfig": {
@@ -36,6 +46,7 @@
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
     "axios": "^1.9.0",
+    "firebase": "^12.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.5.3",
