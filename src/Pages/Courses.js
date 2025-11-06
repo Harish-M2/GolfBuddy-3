@@ -128,8 +128,15 @@ export function Courses() {
         }
       );
 
-      setCourses(response.data);
+      const coursesData = response.data || [];
+      setCourses(coursesData);
+      
+      // Show message if no courses found
+      if (coursesData.length === 0) {
+        setError('No golf courses found in this area. Try expanding your search radius.');
+      }
     } catch (err) {
+      console.error('Golf course search error:', err);
       setError('Failed to fetch golf courses. Please try again later.');
     } finally {
       setLoading(false);
@@ -310,6 +317,7 @@ export function Courses() {
               disabled={loading}
               fullWidth
               size="large"
+              data-testid="search-courses-button"
               startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Search />}
               sx={{
                 py: 1.5,
@@ -369,8 +377,21 @@ export function Courses() {
         </Box>
       )}
 
+      {/* Loading State */}
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <CircularProgress size={60} sx={{ mb: 2 }} />
+            <Typography variant="h6" color="text.secondary">
+              Searching for courses...
+            </Typography>
+          </Box>
+        </Box>
+      )}
+
       {/* Enhanced Results Grid */}
-      <Grid container spacing={3}>
+      {!loading && (
+        <Grid container spacing={3} data-testid="courses-results-grid">
         {currentCourses.length > 0 ? (
           currentCourses.map((course, index) => (
             <Grid 
@@ -388,7 +409,7 @@ export function Courses() {
                 },
               }}
             >
-              <HoverCard sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <HoverCard sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} data-testid="course-card">
                   <Box sx={{ p: 2, pb: 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                       <GolfCourse sx={{ color: '#059669', mr: 1 }} />
@@ -407,6 +428,8 @@ export function Courses() {
                         <Tooltip title={isFavorited(course.place_id || course.id) ? "Remove from favorites" : "Add to favorites"}>
                           <IconButton 
                             onClick={() => handleToggleFavorite(course)}
+                            aria-label={isFavorited(course.place_id || course.id) ? "remove from favorites" : "add to favorites"}
+                            data-testid={isFavorited(course.place_id || course.id) ? "favorited" : "not-favorited"}
                             sx={{ 
                               color: isFavorited(course.place_id || course.id) ? '#dc2626' : 'text.secondary',
                               '&:hover': { 
@@ -471,7 +494,7 @@ export function Courses() {
                   borderRadius: 3
                 }}>
                   <GolfCourse sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
-                  <Typography variant="h6" color="text.secondary" gutterBottom>
+                  <Typography variant="h6" color="text.secondary" gutterBottom data-testid="no-courses-message">
                     No courses found
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -482,6 +505,7 @@ export function Courses() {
             )
           )}
         </Grid>
+      )}
 
       {/* Pagination */}
       {courses.length > coursesPerPage && (

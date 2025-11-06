@@ -413,7 +413,7 @@ export function Scores() {
             >
               <ScoreIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
               <Typography variant="h5" gutterBottom>
-                No scorecards yet
+                No rounds yet
               </Typography>
               <Typography color="text.secondary" sx={{ mb: 3 }}>
                 Start tracking your rounds to see your progress!
@@ -866,7 +866,37 @@ export function Scores() {
       {activeTab === 1 && (
         // Statistics Tab
         <Grid container spacing={{ xs: 2, sm: 3 }}>
-          {stats && (
+          {!stats || (stats.totalRounds === 0) ? (
+            <Grid item xs={12}>
+              <Paper 
+                sx={{ 
+                  p: 6, 
+                  textAlign: 'center', 
+                  borderRadius: 2,
+                  boxShadow: theme.shadows.card 
+                }}
+              >
+                <TrendingUp sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+                <Typography variant="h5" gutterBottom>
+                  No scores yet
+                </Typography>
+                <Typography color="text.secondary" sx={{ mb: 3 }}>
+                  Start tracking to see your performance statistics!
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={() => setCreateDialogOpen(true)}
+                  sx={{
+                    background: theme.gradients.primary,
+                    '&:hover': { background: theme.gradients.secondary }
+                  }}
+                >
+                  Create First Scorecard
+                </Button>
+              </Paper>
+            </Grid>
+          ) : (
             <>
               {/* Summary Stats */}
               <Grid item xs={6} sm={6} md={3}>
