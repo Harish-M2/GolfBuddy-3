@@ -32,6 +32,7 @@ import { useBuddyRequests } from '../hooks/useBuddyRequests';
 import { signOutUser } from '../firebase/auth';
 import { updateBuddyRequestStatus } from '../firebase/database';
 import AuthModal from './AuthModal';
+import { DarkModeToggle } from './DarkModeToggle';
 
 // Streamlined navigation structure with grouped items
 const navigationGroups = {
@@ -428,9 +429,13 @@ export default function ResponsiveAppBar() {
               '& .MuiPaper-root': {
                 borderRadius: 2,
                 mt: 1,
-                background: 'rgba(255,255,255,0.95)',
+                background: (theme) => theme.palette.mode === 'dark' 
+                  ? 'rgba(30, 30, 30, 0.95)' 
+                  : 'rgba(255,255,255,0.95)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                border: (theme) => theme.palette.mode === 'dark'
+                  ? '1px solid rgba(255,255,255,0.1)'
+                  : '1px solid rgba(255,255,255,0.2)',
                 minWidth: 180
               }
             }}
@@ -504,9 +509,13 @@ export default function ResponsiveAppBar() {
               '& .MuiPaper-root': {
                 borderRadius: 2,
                 mt: 1,
-                background: 'rgba(255,255,255,0.95)',
+                background: (theme) => theme.palette.mode === 'dark' 
+                  ? 'rgba(30, 30, 30, 0.95)' 
+                  : 'rgba(255,255,255,0.95)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                border: (theme) => theme.palette.mode === 'dark'
+                  ? '1px solid rgba(255,255,255,0.1)'
+                  : '1px solid rgba(255,255,255,0.2)',
                 minWidth: 180
               }
             }}
@@ -539,7 +548,10 @@ export default function ResponsiveAppBar() {
         </Box>
 
         {/* Right side - Auth Controls */}
-        <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 1 }}>
+          {/* Dark Mode Toggle */}
+          <DarkModeToggle variant="appbar" />
+          
           {currentUser ? (
             <>
               {/* Notifications */}

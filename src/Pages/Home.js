@@ -5,7 +5,8 @@ import golfVideo from '../assets/golfback.mp4';
 import golfPoster from '../assets/golf.jpg';
 import AuthModal from '../Components/AuthModal';
 import { useAuth } from '../contexts/AuthContext';
-import { Snackbar, Alert } from '@mui/material';
+import { useTheme } from '../contexts/ThemeContext';
+import { Snackbar, Alert, ThemeProvider } from '@mui/material';
 import './Home.css';
 
 export function Home() {
@@ -15,6 +16,7 @@ export function Home() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [showAuthMessage, setShowAuthMessage] = useState(false);
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     // Check if auth is required (from protected route redirect)
@@ -92,70 +94,72 @@ export function Home() {
   };
 
   return (
-    <div className="home-container" onClick={handleBackgroundClick}>
-      {/* Local Video Background */}
-      <div className="video-background">
-        <video
-          ref={videoRef}
-          className="background-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={golfPoster}
-          onError={handleVideoError}
-          onLoadedData={handleVideoLoad}
-          onCanPlay={handleVideoCanPlay}
-          preload="auto"
+    <ThemeProvider theme={theme.muiTheme}>
+      <div className="home-container" onClick={handleBackgroundClick}>
+        {/* Local Video Background */}
+        <div className="video-background">
+          <video
+            ref={videoRef}
+            className="background-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={golfPoster}
+            onError={handleVideoError}
+            onLoadedData={handleVideoLoad}
+            onCanPlay={handleVideoCanPlay}
+            preload="auto"
+          >
+            <source src={golfVideo} type="video/mp4" />
+            <source src="/golfback.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          
+          <div className="video-overlay"></div>
+        </div>
+
+        {/* Content */}
+        <div className="home-content">
+          <div className="welcome-section">
+            <h1 className="main-title">GolfBuddy</h1>
+            <p className="subtitle">Find Your Perfect Golf Partner</p>
+          </div>
+          
+          <div className="enter-button-container">
+            <button className="enter-button" onClick={handleEnterClick}>
+              <PlayCircle className="enter-icon" />
+              <span className="enter-text">Enter</span>
+            </button>
+            <p className="enter-description">Start Your Golf Journey</p>
+          </div>
+        </div>
+
+        <AuthModal 
+          open={authModalOpen} 
+          onClose={() => setAuthModalOpen(false)}
+          onAuthSuccess={() => {
+            setAuthModalOpen(false);
+            // Redirect to the page they were trying to access
+            const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+            if (redirectPath) {
+              sessionStorage.removeItem('redirectAfterLogin');
+              navigate(redirectPath);
+            }
+          }}
+        />
+        <Snackbar 
+          open={showAuthMessage} 
+          autoHideDuration={6000} 
+          onClose={() => setShowAuthMessage(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-          <source src={golfVideo} type="video/mp4" />
-          <source src="/golfback.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        
-        <div className="video-overlay"></div>
+          <Alert onClose={() => setShowAuthMessage(false)} severity="warning" variant="filled">
+            🔒 Please sign in or create an account to access this page
+          </Alert>
+        </Snackbar>
       </div>
-
-      {/* Content */}
-      <div className="home-content">
-        <div className="welcome-section">
-          <h1 className="main-title">GolfBuddy</h1>
-          <p className="subtitle">Find Your Perfect Golf Partner</p>
-        </div>
-        
-        <div className="enter-button-container">
-          <button className="enter-button" onClick={handleEnterClick}>
-            <PlayCircle className="enter-icon" />
-            <span className="enter-text">Enter</span>
-          </button>
-          <p className="enter-description">Start Your Golf Journey</p>
-        </div>
-      </div>
-
-      <AuthModal 
-        open={authModalOpen} 
-        onClose={() => setAuthModalOpen(false)}
-        onAuthSuccess={() => {
-          setAuthModalOpen(false);
-          // Redirect to the page they were trying to access
-          const redirectPath = sessionStorage.getItem('redirectAfterLogin');
-          if (redirectPath) {
-            sessionStorage.removeItem('redirectAfterLogin');
-            navigate(redirectPath);
-          }
-        }}
-      />
-      <Snackbar 
-        open={showAuthMessage} 
-        autoHideDuration={6000} 
-        onClose={() => setShowAuthMessage(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setShowAuthMessage(false)} severity="warning" variant="filled">
-          🔒 Please sign in or create an account to access this page
-        </Alert>
-      </Snackbar>
-    </div>
+    </ThemeProvider>
   );
 }
 

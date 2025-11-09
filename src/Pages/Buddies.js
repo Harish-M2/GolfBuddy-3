@@ -2,13 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Container, Typography, Tabs, Tab, Grid, Card, CardContent,
-  Avatar, Button, Chip, Alert, Divider, Badge
+  Avatar, Button, Chip, Alert, Divider, Badge, ThemeProvider
 } from '@mui/material';
 import {
   People, PersonAdd, Send, Check, Close, Delete,
   LocationOn, Refresh, HourglassEmpty, Chat as ChatIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import {
   getBuddyRequests,
   getUserBuddies,
@@ -19,7 +20,7 @@ import {
 } from '../firebase/database';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
-import theme, { gradientText } from '../theme';
+import { gradientText } from '../theme';
 
 function TabPanel({ children, value, index }) {
   return (
@@ -31,6 +32,7 @@ function TabPanel({ children, value, index }) {
 
 export function Buddies() {
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -171,10 +173,10 @@ export function Buddies() {
 
   const getSkillColor = (skill) => {
     switch (skill?.toLowerCase()) {
-      case 'beginner': return theme.colors.success;
-      case 'intermediate': return theme.colors.warning;
-      case 'advanced': return theme.colors.error;
-      default: return theme.colors.text.disabled;
+      case 'beginner': return theme.muiTheme.palette.success.main;
+      case 'intermediate': return theme.muiTheme.palette.warning.main;
+      case 'advanced': return theme.muiTheme.palette.error.main;
+      default: return theme.muiTheme.palette.text.disabled;
     }
   };
 
@@ -186,13 +188,13 @@ export function Buddies() {
     return (
       <Box sx={{ 
         minHeight: '100vh',
-        background: theme.gradients.background,
+        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         p: 4
       }}>
-        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: theme.radius.lg }}>
+        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: 2 }}>
           Please sign in to manage your golf buddies.
         </Alert>
       </Box>
@@ -200,11 +202,12 @@ export function Buddies() {
   }
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      background: theme.gradients.background,
-      py: 6
-    }}>
+    <ThemeProvider theme={theme.muiTheme}>
+      <Box sx={{ 
+        minHeight: '100vh',
+        background: 'background.default',
+        py: 6
+      }}>
       <Container maxWidth="xl">
         {/* Header */}
         <Box sx={{ 
@@ -221,7 +224,7 @@ export function Buddies() {
             component="h1"
             sx={{
               fontWeight: 900,
-              ...gradientText(theme.gradients.primary),
+              ...gradientText(theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
               mb: 1,
               fontSize: { xs: '2rem', md: '3rem' },
             }}
@@ -231,7 +234,7 @@ export function Buddies() {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: theme.colors.text.secondary,
+              color: 'text.secondary',
               maxWidth: 700,
               mx: 'auto',
               fontWeight: 500,
@@ -246,7 +249,7 @@ export function Buddies() {
           <Alert 
             severity="error" 
             onClose={() => setError('')}
-            sx={{ mb: 3, borderRadius: theme.radius.lg, boxShadow: theme.shadows.md }}
+            sx={{ mb: 3, borderRadius: 2, boxShadow: theme.muiTheme.shadows[4] }}
           >
             {error}
           </Alert>
@@ -255,7 +258,7 @@ export function Buddies() {
           <Alert 
             severity="success" 
             onClose={() => setSuccess('')}
-            sx={{ mb: 3, borderRadius: theme.radius.lg, boxShadow: theme.shadows.md }}
+            sx={{ mb: 3, borderRadius: 2, boxShadow: theme.muiTheme.shadows[4] }}
           >
             {success}
           </Alert>
@@ -263,12 +266,16 @@ export function Buddies() {
 
         {/* Tabs */}
         <Card sx={{
-          background: 'rgba(255, 255, 255, 0.95)',
+          background: theme.muiTheme.palette.mode === 'dark' 
+            ? 'rgba(30, 30, 30, 0.95)' 
+            : 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(10px)',
-          borderRadius: theme.radius.xl,
-          boxShadow: theme.shadows.card,
+          borderRadius: 3,
+          boxShadow: theme.muiTheme.shadows[2],
           mb: 4,
-          border: '1px solid rgba(255, 255, 255, 0.2)',
+          border: theme.muiTheme.palette.mode === 'dark'
+            ? '1px solid rgba(255, 255, 255, 0.1)'
+            : '1px solid rgba(255, 255, 255, 0.2)',
         }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}>
             <Tabs 
@@ -317,8 +324,8 @@ export function Buddies() {
           <TabPanel value={activeTab} index={0}>
             {incomingRequests.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
-                <PersonAdd sx={{ fontSize: 80, color: theme.colors.text.disabled, mb: 2 }} />
-                <Typography variant="h6" sx={{ color: theme.colors.text.secondary, mb: 1 }}>
+                <PersonAdd sx={{ fontSize: 80, color: theme.muiTheme.palette.text.disabled, mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
                   No pending requests
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -331,7 +338,7 @@ export function Buddies() {
                   const profile = request.senderProfile;
                   return (
                     <Grid item xs={12} sm={6} md={4} key={request.id}>
-                      <HoverCard>
+                      <Card sx={{ background: (t) => t.palette.mode === "dark" ? "rgba(30, 30, 30, 0.95)" : "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(10px)", border: (t) => t.palette.mode === "dark" ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(255, 255, 255, 0.2)", boxShadow: 2, borderRadius: 3, transition: "all 0.3s", "<HoverCard>:hover": { boxShadow: 12, transform: "scale(1.02)" } }}>
                         <CardContent sx={{ p: 3 }}>
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
                             <Avatar
@@ -368,7 +375,7 @@ export function Buddies() {
 
                           {profile?.location && (
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                              <LocationOn sx={{ fontSize: 16, color: theme.colors.text.secondary }} />
+                              <LocationOn sx={{ fontSize: 16, color: 'text.secondary' }} />
                               <Typography variant="body2" color="text.secondary">
                                 {profile.location}
                               </Typography>
@@ -382,7 +389,7 @@ export function Buddies() {
                                 mb: 2,
                                 p: 1.5,
                                 bgcolor: 'rgba(0,0,0,0.03)',
-                                borderRadius: theme.radius.md,
+                                borderRadius: 2,
                                 fontStyle: 'italic',
                               }}
                             >
@@ -400,8 +407,8 @@ export function Buddies() {
                               onClick={() => handleAcceptRequest(request.id, request.fromUserId)}
                               disabled={actionLoading[request.id]}
                               sx={{
-                                background: theme.gradients.primary,
-                                borderRadius: theme.radius.lg,
+                                background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                borderRadius: 2,
                                 fontWeight: 600,
                               }}
                             >
@@ -414,7 +421,7 @@ export function Buddies() {
                               onClick={() => handleDeclineRequest(request.id)}
                               disabled={actionLoading[request.id]}
                               sx={{
-                                borderRadius: theme.radius.lg,
+                                borderRadius: 2,
                                 fontWeight: 600,
                                 borderWidth: 2,
                               }}
@@ -423,7 +430,7 @@ export function Buddies() {
                             </Button>
                           </Box>
                         </CardContent>
-                      </HoverCard>
+                      </Card>
                     </Grid>
                   );
                 })}
@@ -435,8 +442,8 @@ export function Buddies() {
           <TabPanel value={activeTab} index={1}>
             {buddies.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
-                <People sx={{ fontSize: 80, color: theme.colors.text.disabled, mb: 2 }} />
-                <Typography variant="h6" sx={{ color: theme.colors.text.secondary, mb: 1 }}>
+                <People sx={{ fontSize: 80, color: theme.muiTheme.palette.text.disabled, mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
                   No buddies yet
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -447,7 +454,7 @@ export function Buddies() {
               <Grid container spacing={3}>
                 {buddies.map((buddy) => (
                   <Grid item xs={12} sm={6} md={4} key={buddy.id}>
-                    <HoverCard>
+                    <Card sx={{ background: (t) => t.palette.mode === "dark" ? "rgba(30, 30, 30, 0.95)" : "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(10px)", border: (t) => t.palette.mode === "dark" ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(255, 255, 255, 0.2)", boxShadow: 2, borderRadius: 3, transition: "all 0.3s", "<HoverCard>:hover": { boxShadow: 12, transform: "scale(1.02)" } }}>
                       <CardContent sx={{ p: 3 }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
                           <Avatar
@@ -484,7 +491,7 @@ export function Buddies() {
 
                         {buddy.location && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                            <LocationOn sx={{ fontSize: 16, color: theme.colors.text.secondary }} />
+                            <LocationOn sx={{ fontSize: 16, color: 'text.secondary' }} />
                             <Typography variant="body2" color="text.secondary">
                               {buddy.location}
                             </Typography>
@@ -506,12 +513,12 @@ export function Buddies() {
                             startIcon={<ChatIcon />}
                             onClick={() => navigate('/chat')}
                             sx={{
-                              background: theme.gradients.primary,
-                              borderRadius: theme.radius.lg,
+                              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              borderRadius: 2,
                               fontWeight: 600,
                               '&:hover': {
                                 transform: 'translateY(-2px)',
-                                boxShadow: theme.shadows.lg,
+                                boxShadow: theme.muiTheme.shadows[8],
                               },
                             }}
                           >
@@ -525,7 +532,7 @@ export function Buddies() {
                             onClick={() => handleRemoveBuddy(buddy.id, buddy.displayName)}
                             disabled={actionLoading[buddy.id]}
                             sx={{
-                              borderRadius: theme.radius.lg,
+                              borderRadius: 2,
                               fontWeight: 600,
                               borderWidth: 2,
                             }}
@@ -534,7 +541,7 @@ export function Buddies() {
                           </Button>
                         </Box>
                       </CardContent>
-                    </HoverCard>
+                    </Card>
                   </Grid>
                 ))}
               </Grid>
@@ -545,8 +552,8 @@ export function Buddies() {
           <TabPanel value={activeTab} index={2}>
             {sentRequests.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
-                <Send sx={{ fontSize: 80, color: theme.colors.text.disabled, mb: 2 }} />
-                <Typography variant="h6" sx={{ color: theme.colors.text.secondary, mb: 1 }}>
+                <Send sx={{ fontSize: 80, color: theme.muiTheme.palette.text.disabled, mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
                   No sent requests
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -559,7 +566,7 @@ export function Buddies() {
                   const profile = request.recipientProfile;
                   return (
                     <Grid item xs={12} sm={6} md={4} key={request.id}>
-                      <HoverCard>
+                      <Card sx={{ background: (t) => t.palette.mode === "dark" ? "rgba(30, 30, 30, 0.95)" : "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(10px)", border: (t) => t.palette.mode === "dark" ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(255, 255, 255, 0.2)", boxShadow: 2, borderRadius: 3, transition: "all 0.3s", "<HoverCard>:hover": { boxShadow: 12, transform: "scale(1.02)" } }}>
                         <CardContent sx={{ p: 3 }}>
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
                             <Avatar
@@ -596,7 +603,7 @@ export function Buddies() {
 
                           {profile?.location && (
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                              <LocationOn sx={{ fontSize: 16, color: theme.colors.text.secondary }} />
+                              <LocationOn sx={{ fontSize: 16, color: 'text.secondary' }} />
                               <Typography variant="body2" color="text.secondary">
                                 {profile.location}
                               </Typography>
@@ -608,13 +615,13 @@ export function Buddies() {
                             label="Pending"
                             size="small"
                             sx={{
-                              bgcolor: theme.colors.warning,
+                              bgcolor: theme.muiTheme.palette.warning.main,
                               color: 'white',
                               fontWeight: 600,
                             }}
                           />
                         </CardContent>
-                      </HoverCard>
+                      </Card>
                     </Grid>
                   );
                 })}
@@ -632,7 +639,7 @@ export function Buddies() {
             disabled={loading}
             sx={{
               borderWidth: 2,
-              borderRadius: theme.radius.lg,
+              borderRadius: 2,
               px: 4,
               py: 1.5,
               fontWeight: 600,
@@ -643,5 +650,6 @@ export function Buddies() {
         </Box>
       </Container>
     </Box>
+    </ThemeProvider>
   );
 }

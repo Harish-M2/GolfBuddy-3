@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Box, Container, Typography, Grid, Card, CardContent, Avatar,
   TextField, IconButton, List, ListItem, ListItemAvatar, ListItemText,
-  Divider, Badge, Paper, InputAdornment, Alert
+  Divider, Badge, Paper, InputAdornment, Alert, ThemeProvider,
+  useTheme as useMuiTheme
 } from '@mui/material';
 import {
   Send, ArrowBack, MoreVert, Search, Refresh
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import {
   getUserChats,
   getMessages,
@@ -16,10 +18,12 @@ import {
   getUserBuddies
 } from '../firebase/database';
 import LoadingSpinner from '../Components/LoadingSpinner';
-import theme, { gradientText } from '../theme';
+import { gradientText } from '../theme';
 
 export function Chat() {
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
+  const muiTheme = useMuiTheme();
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -206,13 +210,13 @@ export function Chat() {
     return (
       <Box sx={{ 
         minHeight: '100vh',
-        background: theme.gradients.background,
+        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         p: 4
       }}>
-        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: theme.radius.lg }}>
+        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: 2 }}>
           Please sign in to access chat.
         </Alert>
       </Box>
@@ -220,11 +224,12 @@ export function Chat() {
   }
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      background: theme.gradients.background,
-      py: 4
-    }}>
+    <ThemeProvider theme={theme.muiTheme}>
+      <Box sx={{ 
+        minHeight: '100vh',
+        background: 'background.default',
+        py: 4
+      }}>
       <Container maxWidth="xl">
         {/* Header */}
         <Box sx={{ 
@@ -241,7 +246,7 @@ export function Chat() {
             component="h1"
             sx={{
               fontWeight: 900,
-              ...gradientText(theme.gradients.primary),
+              ...gradientText(theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
               mb: 1,
               fontSize: { xs: '2rem', md: '3rem' },
             }}
@@ -251,7 +256,7 @@ export function Chat() {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: theme.colors.text.secondary,
+              color: 'text.secondary',
               maxWidth: 700,
               mx: 'auto',
               fontWeight: 500,
@@ -265,7 +270,7 @@ export function Chat() {
           <Alert 
             severity="error" 
             onClose={() => setError('')}
-            sx={{ mb: 3, borderRadius: theme.radius.lg }}
+            sx={{ mb: 3, borderRadius: 2 }}
           >
             {error}
           </Alert>
@@ -278,8 +283,8 @@ export function Chat() {
             <Card sx={{
               background: 'rgba(255, 255, 255, 0.95)',
               backdropFilter: 'blur(10px)',
-              borderRadius: theme.radius.xl,
-              boxShadow: theme.shadows.card,
+              borderRadius: 3,
+              boxShadow: theme.muiTheme.shadows[2],
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
@@ -295,14 +300,14 @@ export function Chat() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Search sx={{ color: theme.colors.text.secondary }} />
+                        <Search sx={{ color: 'text.secondary' }} />
                       </InputAdornment>
                     ),
                   }}
                   sx={{
                     mb: 2,
                     '& .MuiOutlinedInput-root': {
-                      borderRadius: theme.radius.lg,
+                      borderRadius: 2,
                     },
                   }}
                 />
@@ -326,12 +331,12 @@ export function Chat() {
                         selected={selectedChat?.id === chat.id}
                         onClick={() => handleSelectChat(chat)}
                         sx={{
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           mb: 1,
                           '&.Mui-selected': {
-                            background: theme.gradients.glow,
+                            background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
                             '&:hover': {
-                              background: theme.gradients.glow,
+                              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
                             },
                           },
                           '&:hover': {
@@ -348,7 +353,7 @@ export function Chat() {
                             <Avatar
                               src={chat.otherUser?.photoURL}
                               sx={{
-                                bgcolor: theme.colors.primary.main,
+                                bgcolor: 'primary.main',
                                 fontWeight: 'bold',
                               }}
                             >
@@ -366,7 +371,7 @@ export function Chat() {
                             <Typography 
                               variant="body2" 
                               sx={{ 
-                                color: chat.isNewBuddy ? theme.colors.primary.main : theme.colors.text.secondary,
+                                color: chat.isNewBuddy ? theme.muiTheme.palette.primary.main : theme.muiTheme.palette.text.secondary,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
@@ -391,7 +396,7 @@ export function Chat() {
                   onClick={loadChats}
                   sx={{ 
                     alignSelf: 'center',
-                    color: theme.colors.primary.main 
+                    color: 'primary.main' 
                   }}
                 >
                   <Refresh />
@@ -405,8 +410,8 @@ export function Chat() {
             <Card sx={{
               background: 'rgba(255, 255, 255, 0.95)',
               backdropFilter: 'blur(10px)',
-              borderRadius: theme.radius.xl,
-              boxShadow: theme.shadows.card,
+              borderRadius: 3,
+              boxShadow: theme.muiTheme.shadows[2],
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
@@ -432,7 +437,7 @@ export function Chat() {
                       sx={{
                         width: 48,
                         height: 48,
-                        bgcolor: theme.colors.primary.main,
+                        bgcolor: 'primary.main',
                         fontWeight: 'bold',
                       }}
                     >
@@ -482,11 +487,11 @@ export function Chat() {
                                 p: 2,
                                 maxWidth: '70%',
                                 background: isOwn 
-                                  ? theme.gradients.primary
+                                  ? theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
                                   : 'rgba(0,0,0,0.05)',
                                 color: isOwn ? 'white' : 'text.primary',
-                                borderRadius: theme.radius.lg,
-                                boxShadow: theme.shadows.sm,
+                                borderRadius: 2,
+                                boxShadow: theme.muiTheme.shadows[1],
                               }}
                             >
                               <Typography variant="body1" sx={{ mb: 0.5 }}>
@@ -532,7 +537,7 @@ export function Chat() {
                       maxRows={3}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                         },
                       }}
                     />
@@ -540,16 +545,16 @@ export function Chat() {
                       type="submit"
                       disabled={!newMessage.trim() || sendingMessage}
                       sx={{
-                        background: theme.gradients.primary,
+                        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         color: 'white',
                         width: 56,
                         height: 56,
                         '&:hover': {
-                          background: theme.gradients.primary,
+                          background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           transform: 'scale(1.05)',
                         },
                         '&:disabled': {
-                          background: theme.colors.text.disabled,
+                          background: muiTheme.palette.text.disabled,
                           color: 'white',
                         },
                       }}
@@ -581,5 +586,6 @@ export function Chat() {
         </Grid>
       </Container>
     </Box>
+    </ThemeProvider>
   );
 }

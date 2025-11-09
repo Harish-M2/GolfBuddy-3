@@ -1,47 +1,160 @@
 // Global theme configuration for GolfBuddy
-export const theme = {
-  // Color Palette - Golf Course Theme
-  colors: {
-    // Primary (Golf Course Green)
-    primary: {
-      main: '#059669',
-      light: '#10b981',
-      dark: '#047857',
-      gradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-    },
-    // Secondary (Sky Blue)
-    secondary: {
-      main: '#0ea5e9',
-      light: '#38bdf8',
-      dark: '#0284c7',
-      gradient: 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)',
-    },
-    // Accent (Gold/Premium)
-    accent: {
-      gold: '#f59e0b',
-      goldLight: '#fbbf24',
-      goldDark: '#d97706',
-      gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
-    },
-    // Status Colors
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444',
-    info: '#0ea5e9',
-    // Neutrals
-    background: '#f8fafc',
-    surface: '#ffffff',
-    text: {
-      primary: '#0f172a',
-      secondary: '#64748b',
-      disabled: '#94a3b8',
-    },
-    // Overlays
-    overlay: {
-      light: 'rgba(255, 255, 255, 0.9)',
-      dark: 'rgba(0, 0, 0, 0.6)',
-    },
+import { createTheme as createMuiTheme } from '@mui/material/styles';
+
+// Theme modes and context
+export const THEME_MODES = {
+  LIGHT: 'light',
+  DARK: 'dark',
+  AUTO: 'auto'
+};
+
+// Light Theme Colors
+const lightColors = {
+  // Primary (Golf Course Green)
+  primary: {
+    main: '#059669',
+    light: '#10b981',
+    dark: '#047857',
+    gradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
   },
+  // Secondary (Sky Blue)
+  secondary: {
+    main: '#0ea5e9',
+    light: '#38bdf8',
+    dark: '#0284c7',
+    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)',
+  },
+  // Accent (Gold/Premium)
+  accent: {
+    gold: '#f59e0b',
+    goldLight: '#fbbf24',
+    goldDark: '#d97706',
+    gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+  },
+  // Status Colors
+  success: '#10b981',
+  warning: '#f59e0b',
+  error: '#ef4444',
+  info: '#0ea5e9',
+  // Neutrals
+  background: '#f8fafc',
+  surface: '#ffffff',
+  text: {
+    primary: '#0f172a',
+    secondary: '#64748b',
+    disabled: '#94a3b8',
+  },
+  // Overlays
+  overlay: {
+    light: 'rgba(255, 255, 255, 0.9)',
+    dark: 'rgba(0, 0, 0, 0.6)',
+  },
+};
+
+// Dark Theme Colors
+const darkColors = {
+  // Primary (Brighter golf green for dark mode)
+  primary: {
+    main: '#10b981',
+    light: '#34d399',
+    dark: '#059669',
+    gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+  },
+  // Secondary (Brighter sky blue)
+  secondary: {
+    main: '#38bdf8',
+    light: '#60a5fa',
+    dark: '#0ea5e9',
+    gradient: 'linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%)',
+  },
+  // Accent (Brighter gold)
+  accent: {
+    gold: '#fbbf24',
+    goldLight: '#fcd34d',
+    goldDark: '#f59e0b',
+    gradient: 'linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%)',
+  },
+  // Status Colors (adjusted for dark mode)
+  success: '#34d399',
+  warning: '#fbbf24',
+  error: '#f87171',
+  info: '#60a5fa',
+  // Dark mode neutrals
+  background: '#0f172a',
+  surface: '#1e293b',
+  text: {
+    primary: '#f1f5f9',
+    secondary: '#cbd5e1',
+    disabled: '#64748b',
+  },
+  // Dark overlays
+  overlay: {
+    light: 'rgba(30, 41, 59, 0.9)',
+    dark: 'rgba(0, 0, 0, 0.8)',
+  },
+};
+
+// Theme factory function
+export const createTheme = (mode = THEME_MODES.LIGHT) => {
+  const colors = mode === THEME_MODES.DARK ? darkColors : lightColors;
+  const isDark = mode === THEME_MODES.DARK;
+  
+  // Create MUI theme
+  const muiTheme = createMuiTheme({
+    palette: {
+      mode: isDark ? 'dark' : 'light',
+      primary: {
+        main: colors.primary.main,
+        light: colors.primary.light,
+        dark: colors.primary.dark,
+      },
+      secondary: {
+        main: colors.secondary.main,
+        light: colors.secondary.light,
+        dark: colors.secondary.dark,
+      },
+      background: {
+        default: colors.background,
+        paper: colors.surface,
+      },
+      text: {
+        primary: colors.text.primary,
+        secondary: colors.text.secondary,
+      },
+      success: {
+        main: colors.success,
+      },
+      warning: {
+        main: colors.warning,
+      },
+      error: {
+        main: colors.error,
+      },
+      info: {
+        main: colors.info,
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            background: isDark 
+              ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' 
+              : 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%)',
+            minHeight: '100vh',
+          },
+        },
+      },
+    },
+  });
+  
+  return {
+    mode,
+    colors,
+    muiTheme,
 
   // Gradients
   gradients: {
@@ -154,10 +267,11 @@ export const theme = {
     xl: '1280px',
     '2xl': '1536px',
   },
+  };
 };
 
 // Helper function to create consistent card styles
-export const cardStyle = {
+export const createCardStyle = (theme) => ({
   background: 'rgba(255, 255, 255, 0.95)',
   backdropFilter: 'blur(10px)',
   border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -168,10 +282,10 @@ export const cardStyle = {
     boxShadow: theme.shadows.cardHover,
     transform: 'translateY(-4px)',
   },
-};
+});
 
 // Helper function for gradient text
-export const gradientText = (gradient) => ({
+export const createGradientText = (theme, gradient) => ({
   background: gradient || theme.gradients.primary,
   backgroundClip: 'text',
   WebkitBackgroundClip: 'text',
@@ -179,15 +293,28 @@ export const gradientText = (gradient) => ({
 });
 
 // Helper function for stat cards
-export const statCardStyle = (color = theme.colors.primary.main) => ({
-  ...cardStyle,
-  background: `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`,
-  border: `1px solid ${color}30`,
-  '&:hover': {
-    ...cardStyle['&:hover'],
-    background: `linear-gradient(135deg, ${color}20 0%, ${color}10 100%)`,
-  },
-});
+export const createStatCardStyle = (theme, color) => {
+  const cardStyle = createCardStyle(theme);
+  const mainColor = color || theme.colors.primary.main;
+  
+  return {
+    ...cardStyle,
+    background: `linear-gradient(135deg, ${mainColor}15 0%, ${mainColor}05 100%)`,
+    border: `1px solid ${mainColor}30`,
+    '&:hover': {
+      ...cardStyle['&:hover'],
+      background: `linear-gradient(135deg, ${mainColor}20 0%, ${mainColor}10 100%)`,
+    },
+  };
+};
 
-// Default export for convenience
-export default theme;
+// Create a default theme instance for convenience
+const defaultTheme = createTheme();
+
+// Backward compatibility exports
+export const theme = defaultTheme;
+export const cardStyle = createCardStyle(defaultTheme);
+export const gradientText = (gradient) => createGradientText(defaultTheme, gradient);
+export const statCardStyle = (color) => createStatCardStyle(defaultTheme, color);
+
+export default defaultTheme;

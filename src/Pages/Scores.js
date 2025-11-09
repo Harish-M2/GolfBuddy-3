@@ -19,6 +19,7 @@ import {
   Tab,
   Table,
   TableBody,
+  ThemeProvider,
   TableCell,
   TableContainer,
   TableHead,
@@ -36,6 +37,7 @@ import {
   CalendarToday
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
 import { theme } from '../theme';
@@ -49,6 +51,7 @@ import {
 
 export function Scores() {
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
   
   const [loading, setLoading] = useState(true);
   const [scorecards, setScorecards] = useState([]);
@@ -280,14 +283,15 @@ export function Scores() {
   }
 
   return (
-    <Container 
-      maxWidth="lg" 
-      sx={{ 
-        mt: { xs: 10, sm: 12 }, 
-        mb: 4,
-        px: { xs: 2, sm: 3 }
-      }}
-    >
+    <ThemeProvider theme={theme.muiTheme}>
+      <Container 
+        maxWidth="lg" 
+        sx={{ 
+          mt: { xs: 10, sm: 12 }, 
+          mb: 4,
+          px: { xs: 2, sm: 3 }
+        }}
+      >
       {/* Header */}
       <Box sx={{ mb: { xs: 3, sm: 4 } }}>
         <Box sx={{ 
@@ -304,7 +308,7 @@ export function Scores() {
               sx={{ 
                 fontWeight: 700,
                 fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
-                background: theme.gradients.primary,
+                background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}
@@ -328,11 +332,11 @@ export function Scores() {
             onClick={() => setCreateDialogOpen(true)}
             fullWidth={false}
             sx={{
-              background: theme.gradients.primary,
+              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               whiteSpace: 'nowrap',
               minWidth: { xs: '100%', sm: 'auto' },
               '&:hover': {
-                background: theme.gradients.secondary
+                background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)'
               }
             }}
           >
@@ -354,7 +358,7 @@ export function Scores() {
       )}
 
       {/* Tabs */}
-      <Paper sx={{ mb: 3, borderRadius: 2, boxShadow: theme.shadows.card }}>
+      <Paper sx={{ mb: 3, borderRadius: 2, boxShadow: theme.muiTheme.shadows[2] }}>
         <Tabs 
           value={activeTab} 
           onChange={(e, newValue) => setActiveTab(newValue)}
@@ -390,7 +394,7 @@ export function Scores() {
                 p: 6, 
                 textAlign: 'center', 
                 borderRadius: 2,
-                boxShadow: theme.shadows.card 
+                boxShadow: theme.muiTheme.shadows[2] 
               }}
             >
               <ScoreIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
@@ -405,8 +409,8 @@ export function Scores() {
                 startIcon={<Add />}
                 onClick={() => setCreateDialogOpen(true)}
                 sx={{
-                  background: theme.gradients.primary,
-                  '&:hover': { background: theme.gradients.secondary }
+                  background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '&:hover': { background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' }
                 }}
               >
                 Create First Scorecard
@@ -419,7 +423,7 @@ export function Scores() {
                   <HoverCard>
                     <Card sx={{ 
                       borderRadius: 2,
-                      boxShadow: theme.shadows.card
+                      boxShadow: theme.muiTheme.shadows[2]
                     }}>
                       <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                         {/* Header */}
@@ -855,7 +859,7 @@ export function Scores() {
                   p: 6, 
                   textAlign: 'center', 
                   borderRadius: 2,
-                  boxShadow: theme.shadows.card 
+                  boxShadow: theme.muiTheme.shadows[2] 
                 }}
               >
                 <TrendingUp sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
@@ -870,8 +874,8 @@ export function Scores() {
                   startIcon={<Add />}
                   onClick={() => setCreateDialogOpen(true)}
                   sx={{
-                    background: theme.gradients.primary,
-                    '&:hover': { background: theme.gradients.secondary }
+                    background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    '&:hover': { background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' }
                   }}
                 >
                   Create First Scorecard
@@ -886,7 +890,7 @@ export function Scores() {
                   p: { xs: 2, sm: 3 }, 
                   textAlign: 'center', 
                   borderRadius: 2, 
-                  boxShadow: theme.shadows.card 
+                  boxShadow: theme.muiTheme.shadows[2] 
                 }}>
                   <ScoreIcon sx={{ 
                     fontSize: { xs: 32, sm: 40 }, 
@@ -917,7 +921,7 @@ export function Scores() {
                   p: { xs: 2, sm: 3 }, 
                   textAlign: 'center', 
                   borderRadius: 2, 
-                  boxShadow: theme.shadows.card 
+                  boxShadow: theme.muiTheme.shadows[2] 
                 }}>
                   <TrendingUp sx={{ 
                     fontSize: { xs: 32, sm: 40 }, 
@@ -948,7 +952,7 @@ export function Scores() {
                   p: { xs: 2, sm: 3 }, 
                   textAlign: 'center', 
                   borderRadius: 2, 
-                  boxShadow: theme.shadows.card 
+                  boxShadow: theme.muiTheme.shadows[2] 
                 }}>
                   <EmojiEvents sx={{ 
                     fontSize: { xs: 32, sm: 40 }, 
@@ -979,7 +983,7 @@ export function Scores() {
                   p: { xs: 2, sm: 3 }, 
                   textAlign: 'center', 
                   borderRadius: 2, 
-                  boxShadow: theme.shadows.card 
+                  boxShadow: theme.muiTheme.shadows[2] 
                 }}>
                   <Flag sx={{ 
                     fontSize: { xs: 32, sm: 40 }, 
@@ -1011,7 +1015,7 @@ export function Scores() {
                   <Paper sx={{ 
                     p: { xs: 2, sm: 3 }, 
                     borderRadius: 2, 
-                    boxShadow: theme.shadows.card 
+                    boxShadow: theme.muiTheme.shadows[2] 
                   }}>
                     <Typography 
                       variant="h6" 
@@ -1172,8 +1176,8 @@ export function Scores() {
             onClick={createDialogOpen ? handleCreateScorecard : handleUpdateScorecard}
             variant="contained"
             sx={{
-              background: theme.gradients.primary,
-              '&:hover': { background: theme.gradients.secondary }
+              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              '&:hover': { background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' }
             }}
           >
             {createDialogOpen ? 'Save Scorecard' : 'Update Scorecard'}
@@ -1181,5 +1185,6 @@ export function Scores() {
         </DialogActions>
       </Dialog>
     </Container>
+    </ThemeProvider>
   );
 }

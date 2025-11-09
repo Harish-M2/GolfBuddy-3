@@ -2,20 +2,24 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box, Container, Typography, Grid, CardMedia, CardContent,
   Button, IconButton, Dialog, DialogContent, DialogActions,
-  Fab, CircularProgress, Alert, TextField, Chip, Zoom, LinearProgress
+  Fab, CircularProgress, Alert, TextField, Chip, Zoom, LinearProgress,
+  ThemeProvider, useTheme as useMuiTheme
 } from '@mui/material';
 import {
   AddAPhoto, Close, Delete, CloudUpload, Image as ImageIcon,
   LocationOn, CalendarToday, ZoomIn
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { uploadGolfPhoto, getUserGolfPhotos, deleteGolfPhoto } from '../firebase/database';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
-import theme, { gradientText } from '../theme';
+import { gradientText } from '../theme';
 
 export function Photos() {
   const { currentUser, userProfile } = useAuth();
+  const { theme } = useTheme();
+  const muiTheme = useMuiTheme();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -167,13 +171,15 @@ export function Photos() {
     return (
       <Box sx={{ 
         minHeight: '100vh',
-        background: theme.gradients.background,
+        background: theme.muiTheme.palette.mode === 'dark' 
+          ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' 
+          : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         p: 4
       }}>
-        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: theme.radius.lg }}>
+        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: 2 }}>
           Please sign in to view and upload golf photos.
         </Alert>
       </Box>
@@ -187,7 +193,9 @@ export function Photos() {
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      background: theme.gradients.background,
+      background: theme.muiTheme.palette.mode === 'dark' 
+        ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' 
+        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       py: 6,
       pb: 10
     }}>
@@ -207,7 +215,9 @@ export function Photos() {
             component="h1"
             sx={{
               fontWeight: 900,
-              ...gradientText(theme.gradients.primary),
+              ...gradientText(theme.muiTheme.palette.mode === 'dark' 
+                ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
               mb: 1,
               fontSize: { xs: '2rem', md: '3rem' },
             }}
@@ -217,7 +227,7 @@ export function Photos() {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: theme.colors.text.secondary,
+              color: 'text.secondary',
               maxWidth: 700,
               mx: 'auto',
               fontWeight: 500,
@@ -229,8 +239,10 @@ export function Photos() {
           <Chip
             label={`${photos.length} ${photos.length === 1 ? 'Photo' : 'Photos'}`}
             sx={{
-              background: theme.gradients.glow,
-              color: theme.colors.primary.main,
+              background: theme.muiTheme.palette.mode === 'dark' 
+                ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' 
+                : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+              color: 'primary.main',
               fontWeight: 700,
               fontSize: '0.95rem',
               px: 1,
@@ -244,8 +256,8 @@ export function Photos() {
             severity="error" 
             sx={{ 
               mb: 3,
-              borderRadius: theme.radius.lg,
-              boxShadow: theme.shadows.md,
+              borderRadius: 2,
+              boxShadow: theme.muiTheme.shadows[4],
             }} 
             onClose={() => setError('')}
           >
@@ -257,8 +269,8 @@ export function Photos() {
             severity="success" 
             sx={{ 
               mb: 3,
-              borderRadius: theme.radius.lg,
-              boxShadow: theme.shadows.md,
+              borderRadius: 2,
+              boxShadow: theme.muiTheme.shadows[4],
             }} 
             onClose={() => setSuccess('')}
           >
@@ -282,7 +294,9 @@ export function Photos() {
                 width: 120,
                 height: 120,
                 borderRadius: '50%',
-                background: theme.gradients.glow,
+                background: theme.muiTheme.palette.mode === 'dark' 
+                  ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' 
+                  : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -290,7 +304,7 @@ export function Photos() {
                 mb: 3,
               }}
             >
-              <ImageIcon sx={{ fontSize: 60, color: theme.colors.primary.main }} />
+              <ImageIcon sx={{ fontSize: 60, color: 'primary.main' }} />
             </Box>
             <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
               No photos yet
@@ -304,17 +318,19 @@ export function Photos() {
               onClick={() => setUploadDialog(true)}
               size="large"
               sx={{
-                background: theme.gradients.primary,
-                borderRadius: theme.radius.lg,
+                background: theme.muiTheme.palette.mode === 'dark' 
+                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                  : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: 2,
                 px: 4,
                 py: 1.5,
                 fontWeight: 600,
-                boxShadow: theme.shadows.md,
+                boxShadow: theme.muiTheme.shadows[4],
                 '&:hover': {
-                  boxShadow: theme.shadows.lg,
+                  boxShadow: theme.muiTheme.shadows[8],
                   transform: 'translateY(-2px)',
                 },
-                transition: theme.transitions.base,
+                transition: 'all 0.2s ease-in-out',
               }}
             >
               Upload Your First Photo
@@ -352,7 +368,7 @@ export function Photos() {
                         alt={photo.caption || 'Golf photo'}
                         sx={{ 
                           objectFit: 'cover',
-                          transition: theme.transitions.base,
+                          transition: 'all 0.2s ease-in-out',
                         }}
                       />
                       {/* Hover Overlay */}
@@ -368,7 +384,7 @@ export function Photos() {
                           alignItems: 'center',
                           justifyContent: 'center',
                           opacity: 0,
-                          transition: theme.transitions.base,
+                          transition: 'all 0.2s ease-in-out',
                           '&:hover': {
                             opacity: 1,
                           },
@@ -394,14 +410,14 @@ export function Photos() {
                       </Typography>
                       {photo.location && (
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
-                          <LocationOn sx={{ fontSize: 16, color: theme.colors.text.secondary, mr: 0.5 }} />
+                          <LocationOn sx={{ fontSize: 16, color: 'text.secondary', mr: 0.5 }} />
                           <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
                             {photo.location}
                           </Typography>
                         </Box>
                       )}
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <CalendarToday sx={{ fontSize: 16, color: theme.colors.text.secondary, mr: 0.5 }} />
+                        <CalendarToday sx={{ fontSize: 16, color: 'text.secondary', mr: 0.5 }} />
                         <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
                           {formatDate(photo.uploadedAt)}
                         </Typography>
@@ -424,8 +440,10 @@ export function Photos() {
               right: 32,
               width: 64,
               height: 64,
-              background: theme.gradients.primary,
-              boxShadow: theme.shadows.cardHover,
+              background: theme.muiTheme.palette.mode === 'dark' 
+                ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              boxShadow: theme.muiTheme.shadows[12],
               '&:hover': {
                 transform: 'scale(1.1) rotate(90deg)',
                 boxShadow: '0 12px 40px rgba(30, 64, 175, 0.4)',
@@ -454,8 +472,8 @@ export function Photos() {
         fullWidth
         PaperProps={{
           sx: { 
-            borderRadius: theme.radius.xl,
-            boxShadow: theme.shadows.cardHover,
+            borderRadius: 3,
+            boxShadow: theme.muiTheme.shadows[12],
           }
         }}
       >
@@ -479,8 +497,8 @@ export function Photos() {
               disabled={uploading}
               sx={{
                 '&:hover': {
-                  background: theme.colors.error + '20',
-                  color: theme.colors.error,
+                  background: theme.muiTheme.palette.error.main + '20',
+                  color: 'error.main',
                 },
               }}
             >
@@ -490,7 +508,7 @@ export function Photos() {
 
           {/* Preview */}
           {previewUrl && (
-            <Box sx={{ mb: 3, borderRadius: theme.radius.lg, overflow: 'hidden' }}>
+            <Box sx={{ mb: 3, borderRadius: 2, overflow: 'hidden' }}>
               <img 
                 src={previewUrl} 
                 alt="Preview" 
@@ -517,7 +535,7 @@ export function Photos() {
               sx={{ 
                 mb: 2,
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: theme.radius.lg,
+                  borderRadius: 2,
                 },
               }}
             />
@@ -529,11 +547,11 @@ export function Photos() {
               placeholder="Where was this taken?"
               disabled={uploading}
               InputProps={{
-                startAdornment: <LocationOn sx={{ color: theme.colors.text.secondary, mr: 1 }} />
+                startAdornment: <LocationOn color="text.secondary" sx={{ mr: 1 }} />
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: theme.radius.lg,
+                  borderRadius: 2,
                 },
               }}
             />
@@ -555,11 +573,13 @@ export function Photos() {
                 value={uploadProgress}
                 sx={{
                   height: 8,
-                  borderRadius: theme.radius.full,
-                  backgroundColor: theme.colors.text.disabled + '30',
+                  borderRadius: 20,
+                  backgroundColor: muiTheme.palette.text.disabled + '30',
                   '& .MuiLinearProgress-bar': {
-                    background: theme.gradients.primary,
-                    borderRadius: theme.radius.full,
+                    background: theme.muiTheme.palette.mode === 'dark' 
+                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderRadius: 20,
                   },
                 }}
               />
@@ -575,20 +595,22 @@ export function Photos() {
             disabled={uploading}
             sx={{
               py: 1.75,
-              borderRadius: theme.radius.lg,
-              background: theme.gradients.primary,
+              borderRadius: 2,
+              background: theme.muiTheme.palette.mode === 'dark' 
+                ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               fontWeight: 600,
               fontSize: '1rem',
-              boxShadow: theme.shadows.md,
+              boxShadow: theme.muiTheme.shadows[4],
               '&:hover': {
-                boxShadow: theme.shadows.lg,
+                boxShadow: theme.muiTheme.shadows[8],
                 transform: 'translateY(-2px)',
               },
               '&:disabled': {
-                background: theme.colors.text.disabled,
+                background: muiTheme.palette.text.disabled,
                 color: 'white',
               },
-              transition: theme.transitions.base,
+              transition: 'all 0.2s ease-in-out',
             }}
           >
             {uploading ? 'Uploading...' : previewUrl ? 'Upload This Photo' : 'Choose Photo'}
@@ -616,8 +638,8 @@ export function Photos() {
         fullWidth
         PaperProps={{
           sx: { 
-            borderRadius: theme.radius.xl,
-            boxShadow: theme.shadows.cardHover,
+            borderRadius: 3,
+            boxShadow: theme.muiTheme.shadows[12],
             maxHeight: '90vh',
           }
         }}
@@ -637,7 +659,7 @@ export function Photos() {
                     bgcolor: 'white',
                     transform: 'scale(1.1)',
                   },
-                  transition: theme.transitions.base,
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
                 <Close />
@@ -682,7 +704,7 @@ export function Photos() {
                   {selectedPhoto.location && (
                     <Grid item xs={12} sm={6}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <LocationOn sx={{ fontSize: 22, mr: 1.5, color: theme.colors.accent.gold }} />
+                        <LocationOn sx={{ fontSize: 22, mr: 1.5, color: '#FFD700' }} />
                         <Box>
                           <Typography variant="caption" sx={{ opacity: 0.8 }}>
                             Location
@@ -697,7 +719,7 @@ export function Photos() {
                   
                   <Grid item xs={12} sm={6}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <CalendarToday sx={{ fontSize: 22, mr: 1.5, color: theme.colors.accent.gold }} />
+                      <CalendarToday sx={{ fontSize: 22, mr: 1.5, color: '#FFD700' }} />
                       <Box>
                         <Typography variant="caption" sx={{ opacity: 0.8 }}>
                           Date
@@ -725,14 +747,14 @@ export function Photos() {
                 color="error"
                 variant="outlined"
                 sx={{
-                  borderRadius: theme.radius.lg,
+                  borderRadius: 2,
                   px: 3,
                   py: 1,
                   fontWeight: 600,
                   borderWidth: 2,
                   '&:hover': {
                     borderWidth: 2,
-                    background: theme.colors.error + '10',
+                    background: theme.muiTheme.palette.error.main + '10',
                   },
                 }}
               >

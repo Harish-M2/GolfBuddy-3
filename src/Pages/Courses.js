@@ -4,7 +4,7 @@ import {
   Grid, Card, CardContent, Typography, Button, TextField, MenuItem, 
   Select, InputLabel, FormControl, Box, CircularProgress, Alert,
   Chip, Paper, Divider, IconButton, Tooltip, Dialog, DialogTitle,
-  DialogContent, DialogActions, Container
+  DialogContent, DialogActions, Container, ThemeProvider
 } from '@mui/material';
 import { 
   LocationOn, Search, GolfCourse, Phone, DriveEta, 
@@ -12,16 +12,18 @@ import {
   Close
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { 
   addFavoriteCourse, 
   removeFavoriteCourse, 
   getFavoriteCourses 
 } from '../firebase/database';
 import { HoverCard } from '../Components/EnhancedComponents';
-import theme, { gradientText } from '../theme';
+import { gradientText } from '../theme';
 
 export function Courses() {
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
   const [postcode, setPostcode] = useState('');
   const [radius, setRadius] = useState(10);
   const [country, setCountry] = useState('UK');
@@ -168,11 +170,12 @@ export function Courses() {
   };
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      background: theme.gradients.background,
-      py: 6
-    }}>
+    <ThemeProvider theme={theme.muiTheme}>
+      <Box sx={{ 
+        minHeight: '100vh',
+        background: 'background.default',
+        py: 6
+      }}>
       <Container maxWidth="xl">
         {/* Enhanced Header with Animation */}
         <Box sx={{ 
@@ -189,7 +192,7 @@ export function Courses() {
             component="h1"
             sx={{
               fontWeight: 900,
-              ...gradientText(theme.gradients.primary),
+              ...gradientText(theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
               mb: 1,
               fontSize: { xs: '2rem', md: '3rem' },
             }}
@@ -199,7 +202,7 @@ export function Courses() {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: theme.colors.text.secondary,
+              color: 'text.secondary',
               maxWidth: 700,
               mx: 'auto',
               fontWeight: 500,
@@ -216,17 +219,17 @@ export function Courses() {
               onClick={() => setFavoritesDialog(true)}
               sx={{
                 background: 'linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)',
-                borderRadius: theme.radius.lg,
+                borderRadius: 2,
                 px: 4,
                 py: 1.5,
                 fontWeight: 600,
-                boxShadow: theme.shadows.md,
+                boxShadow: theme.muiTheme.shadows[4],
                 '&:hover': {
                   background: 'linear-gradient(135deg, #b91c1c 0%, #d97706 100%)',
-                  boxShadow: theme.shadows.lg,
+                  boxShadow: theme.muiTheme.shadows[8],
                   transform: 'translateY(-2px)',
                 },
-                transition: theme.transitions.base,
+                transition: 'all 0.2s ease-in-out',
               }}
             >
               My Favorites ({favoriteCourses.length})
@@ -242,8 +245,8 @@ export function Courses() {
               sx={{
                 width: 48,
                 height: 48,
-                borderRadius: theme.radius.lg,
-                background: theme.gradients.primary,
+                borderRadius: 2,
+                background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -342,8 +345,8 @@ export function Courses() {
           severity="error" 
           sx={{ 
             mb: 3,
-            borderRadius: theme.radius.lg,
-            boxShadow: theme.shadows.md,
+            borderRadius: 2,
+            boxShadow: theme.muiTheme.shadows[4],
           }} 
           onClose={() => setError('')}
         >
@@ -356,8 +359,8 @@ export function Courses() {
           severity="success" 
           sx={{ 
             mb: 3,
-            borderRadius: theme.radius.lg,
-            boxShadow: theme.shadows.md,
+            borderRadius: 2,
+            boxShadow: theme.muiTheme.shadows[4],
           }} 
           onClose={() => setSuccess('')}
         >
@@ -659,5 +662,6 @@ export function Courses() {
       </Dialog>
       </Container>
     </Box>
+    </ThemeProvider>
   );
 }

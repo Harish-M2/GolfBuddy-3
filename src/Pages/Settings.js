@@ -4,7 +4,8 @@ import {
   Avatar, Grid, Alert, Chip, Select, MenuItem, FormControl, InputLabel,
   Switch, FormControlLabel, List, ListItem, ListItemText,
   ListItemAvatar, ListItemSecondaryAction, IconButton, Dialog, DialogTitle,
-  DialogContent, DialogActions, Badge, CircularProgress, Divider
+  DialogContent, DialogActions, Badge, CircularProgress, Divider, ThemeProvider,
+  useTheme as useMuiTheme
 } from '@mui/material';
 import {
   Edit, Save, Cancel, LocationOn, Phone, Email,
@@ -24,10 +25,13 @@ import {
 } from '../firebase/database';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
-import theme, { gradientText } from '../theme';
+import { gradientText } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Settings() {
   const { currentUser, userProfile, updateProfile } = useAuth();
+  const { theme } = useTheme();
+  const muiTheme = useMuiTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -275,13 +279,13 @@ function Settings() {
     return (
       <Box sx={{ 
         minHeight: '100vh',
-        background: theme.gradients.background,
+        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         p: 4
       }}>
-        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: theme.radius.lg }}>
+        <Alert severity="info" sx={{ maxWidth: 400, borderRadius: 2 }}>
           Please sign in to access your profile settings.
         </Alert>
       </Box>
@@ -291,7 +295,7 @@ function Settings() {
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      background: theme.gradients.background,
+      background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       py: 6
     }}>
       <Container maxWidth="xl">
@@ -310,7 +314,7 @@ function Settings() {
             component="h1"
             sx={{
               fontWeight: 900,
-              ...gradientText(theme.gradients.primary),
+              ...gradientText(theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
               mb: 1,
               fontSize: { xs: '2rem', md: '3rem' },
             }}
@@ -320,7 +324,7 @@ function Settings() {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: theme.colors.text.secondary,
+              color: 'text.secondary',
               maxWidth: 700,
               mx: 'auto',
               fontWeight: 500,
@@ -336,8 +340,8 @@ function Settings() {
             severity="error" 
             sx={{ 
               mb: 3,
-              borderRadius: theme.radius.lg,
-              boxShadow: theme.shadows.md,
+              borderRadius: 2,
+              boxShadow: theme.muiTheme.shadows[4],
             }} 
             onClose={() => setError('')}
           >
@@ -349,8 +353,8 @@ function Settings() {
             severity="success" 
             sx={{ 
               mb: 3,
-              borderRadius: theme.radius.lg,
-              boxShadow: theme.shadows.md,
+              borderRadius: 2,
+              boxShadow: theme.muiTheme.shadows[4],
             }} 
             onClose={() => setSuccess('')}
           >
@@ -378,16 +382,16 @@ function Settings() {
                       startIcon={<Edit />}
                       onClick={() => setIsEditing(true)}
                       sx={{
-                        background: theme.gradients.primary,
-                        borderRadius: theme.radius.lg,
+                        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: 2,
                         px: 3,
                         fontWeight: 600,
-                        boxShadow: theme.shadows.md,
+                        boxShadow: theme.muiTheme.shadows[4],
                         '&:hover': {
-                          boxShadow: theme.shadows.lg,
+                          boxShadow: theme.muiTheme.shadows[8],
                           transform: 'translateY(-2px)',
                         },
-                        transition: theme.transitions.base,
+                        transition: 'all 0.2s ease-in-out',
                       }}
                     >
                       Edit Profile
@@ -400,16 +404,16 @@ function Settings() {
                         onClick={handleSave}
                         disabled={loading}
                         sx={{
-                          background: theme.gradients.primary,
-                          borderRadius: theme.radius.lg,
+                          background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          borderRadius: 2,
                           px: 3,
                           fontWeight: 600,
-                          boxShadow: theme.shadows.md,
+                          boxShadow: theme.muiTheme.shadows[4],
                           '&:hover': {
-                            boxShadow: theme.shadows.lg,
+                            boxShadow: theme.muiTheme.shadows[8],
                             transform: 'translateY(-2px)',
                           },
-                          transition: theme.transitions.base,
+                          transition: 'all 0.2s ease-in-out',
                         }}
                       >
                         {loading ? 'Saving...' : 'Save'}
@@ -420,7 +424,7 @@ function Settings() {
                         onClick={handleCancel}
                         disabled={loading}
                         sx={{
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           borderWidth: 2,
                           px: 3,
                           fontWeight: 600,
@@ -446,16 +450,16 @@ function Settings() {
                       <IconButton
                         component="label"
                         sx={{
-                          background: theme.gradients.primary,
+                          background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           color: 'white',
                           width: 40,
                           height: 40,
-                          boxShadow: theme.shadows.md,
+                          boxShadow: theme.muiTheme.shadows[4],
                           '&:hover': {
                             transform: 'scale(1.1)',
-                            boxShadow: theme.shadows.lg,
+                            boxShadow: theme.muiTheme.shadows[8],
                           },
-                          transition: theme.transitions.base,
+                          transition: 'all 0.2s ease-in-out',
                         }}
                         disabled={uploadingPhoto}
                       >
@@ -482,8 +486,8 @@ function Settings() {
                         fontWeight: 'bold',
                         bgcolor: photoURL ? 'transparent' : getSkillColor(formData.skillLevel),
                         mr: 3,
-                        border: `4px solid ${theme.colors.primary.main}30`,
-                        boxShadow: theme.shadows.card,
+                        border: `4px solid ${muiTheme.palette.primary.main}30`,
+                        boxShadow: theme.muiTheme.shadows[2],
                       }}
                     >
                       {!photoURL && getInitials(formData.displayName)}
@@ -500,7 +504,7 @@ function Settings() {
                       <Typography variant="body2" sx={{ 
                         display: 'block', 
                         mb: 1,
-                        color: theme.colors.primary.main,
+                        color: 'primary.main',
                         fontWeight: 600,
                       }}>
                         Uploading photo...
@@ -532,11 +536,11 @@ function Settings() {
                       onChange={(e) => handleInputChange('displayName', e.target.value)}
                       disabled={!isEditing}
                       InputProps={{
-                        startAdornment: <Person sx={{ color: theme.colors.text.secondary, mr: 1 }} />
+                        startAdornment: <Person color="text.secondary" sx={{ mr: 1 }} />
                       }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           '& fieldset': {
                             borderWidth: 2,
                           },
@@ -552,11 +556,11 @@ function Settings() {
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       disabled={!isEditing}
                       InputProps={{
-                        startAdornment: <Email sx={{ color: theme.colors.text.secondary, mr: 1 }} />
+                        startAdornment: <Email color="text.secondary" sx={{ mr: 1 }} />
                       }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           '& fieldset': {
                             borderWidth: 2,
                           },
@@ -572,11 +576,11 @@ function Settings() {
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       disabled={!isEditing}
                       InputProps={{
-                        startAdornment: <Phone sx={{ color: theme.colors.text.secondary, mr: 1 }} />
+                        startAdornment: <Phone color="text.secondary" sx={{ mr: 1 }} />
                       }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           '& fieldset': {
                             borderWidth: 2,
                           },
@@ -592,11 +596,11 @@ function Settings() {
                       onChange={(e) => handleInputChange('location', e.target.value)}
                       disabled={!isEditing}
                       InputProps={{
-                        startAdornment: <LocationOn sx={{ color: theme.colors.text.secondary, mr: 1 }} />
+                        startAdornment: <LocationOn color="text.secondary" sx={{ mr: 1 }} />
                       }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           '& fieldset': {
                             borderWidth: 2,
                           },
@@ -612,7 +616,7 @@ function Settings() {
                         onChange={(e) => handleInputChange('skillLevel', e.target.value)}
                         label="Skill Level"
                         sx={{
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           '& .MuiOutlinedInput-notchedOutline': {
                             borderWidth: 2,
                           },
@@ -640,10 +644,10 @@ function Settings() {
                             disabled={!isEditing}
                             sx={{
                               '& .MuiSwitch-switchBase.Mui-checked': {
-                                color: theme.colors.success,
+                                color: muiTheme.palette.success.main,
                               },
                               '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                backgroundColor: theme.colors.success,
+                                backgroundColor: muiTheme.palette.success.main,
                               },
                             }}
                           />
@@ -668,7 +672,7 @@ function Settings() {
                       placeholder="Tell other golfers about yourself..."
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          borderRadius: theme.radius.lg,
+                          borderRadius: 2,
                           '& fieldset': {
                             borderWidth: 2,
                           },
@@ -686,10 +690,10 @@ function Settings() {
                             disabled={!isEditing}
                             sx={{
                               '& .MuiSwitch-switchBase.Mui-checked': {
-                                color: theme.colors.primary.main,
+                                color: 'primary.main',
                               },
                               '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                backgroundColor: theme.colors.primary.main,
+                                backgroundColor: muiTheme.palette.primary.main,
                               },
                             }}
                           />
@@ -724,7 +728,7 @@ function Settings() {
                     badgeContent={requests.received.length} 
                     sx={{
                       '& .MuiBadge-badge': {
-                        background: theme.gradients.primary,
+                        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         fontWeight: 700,
                       },
                     }}
@@ -733,14 +737,14 @@ function Settings() {
                       sx={{
                         width: 40,
                         height: 40,
-                        borderRadius: theme.radius.lg,
-                        background: theme.gradients.glow,
+                        borderRadius: 2,
+                        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
-                      <Notifications sx={{ color: theme.colors.primary.main }} />
+                      <Notifications sx={{ color: 'primary.main' }} />
                     </Box>
                   </Badge>
                 </Box>
@@ -819,7 +823,7 @@ function Settings() {
                   <Chip 
                     label={buddies.length} 
                     sx={{
-                      background: theme.gradients.primary,
+                      background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                       color: 'white',
                       fontWeight: 700,
                       fontSize: '0.875rem',
@@ -889,11 +893,11 @@ function Settings() {
                       sx={{
                         textAlign: 'center',
                         p: 2,
-                        borderRadius: theme.radius.lg,
-                        background: theme.gradients.glow,
+                        borderRadius: 2,
+                        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
                       }}
                     >
-                      <Typography variant="h4" sx={{ fontWeight: 700, ...gradientText(theme.gradients.primary) }}>
+                      <Typography variant="h4" sx={{ fontWeight: 700, ...gradientText(theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)') }}>
                         {requests.sent.length}
                       </Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
@@ -906,11 +910,11 @@ function Settings() {
                       sx={{
                         textAlign: 'center',
                         p: 2,
-                        borderRadius: theme.radius.lg,
-                        background: theme.gradients.glow,
+                        borderRadius: 2,
+                        background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' : 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
                       }}
                     >
-                      <Typography variant="h4" sx={{ fontWeight: 700, color: theme.colors.success }}>
+                      <Typography variant="h4" sx={{ fontWeight: 700, color: muiTheme.palette.success.main }}>
                         {buddies.length}
                       </Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
@@ -921,10 +925,10 @@ function Settings() {
                 </Grid>
                 <Divider sx={{ my: 2 }} />
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Schedule sx={{ color: formData.available ? theme.colors.success : theme.colors.error, mr: 1 }} />
+                  <Schedule sx={{ color: formData.available ? theme.muiTheme.palette.success.main : theme.muiTheme.palette.error.main, mr: 1 }} />
                   <Typography 
                     variant="body1" 
-                    sx={{ color: formData.available ? theme.colors.success : theme.colors.error, fontWeight: 700 }}
+                    sx={{ color: formData.available ? theme.muiTheme.palette.success.main : theme.muiTheme.palette.error.main, fontWeight: 700 }}
                   >
                     {formData.available ? 'Available to Play' : 'Currently Busy'}
                   </Typography>

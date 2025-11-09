@@ -19,6 +19,7 @@ import {
   AvatarGroup,
   Alert,
   FormControl,
+  ThemeProvider,
   InputLabel,
   Select,
   MenuItem,
@@ -49,6 +50,7 @@ import {
   CalendarToday
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
 import { theme } from '../theme';
@@ -63,6 +65,7 @@ import {
 
 export function TeeTimes() {
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
   
   const [loading, setLoading] = useState(true);
   const [teeTimes, setTeeTimes] = useState([]);
@@ -292,7 +295,8 @@ export function TeeTimes() {
   const filteredTeeTimes = getFilteredTeeTimes();
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
+    <ThemeProvider theme={theme.muiTheme}>
+      <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -300,7 +304,7 @@ export function TeeTimes() {
             variant="h3" 
             sx={{ 
               fontWeight: 700,
-              background: theme.gradients.primary,
+              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}
@@ -312,9 +316,9 @@ export function TeeTimes() {
             startIcon={<Add />}
             onClick={() => setCreateDialogOpen(true)}
             sx={{
-              background: theme.gradients.primary,
+              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               '&:hover': {
-                background: theme.gradients.secondary
+                background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)'
               }
             }}
           >
@@ -339,7 +343,7 @@ export function TeeTimes() {
       )}
 
       {/* Tabs */}
-      <Paper sx={{ mb: 3, borderRadius: 2, boxShadow: theme.shadows.card }}>
+      <Paper sx={{ mb: 3, borderRadius: 2, boxShadow: theme.muiTheme.shadows[2] }}>
         <Tabs 
           value={activeTab} 
           onChange={(e, newValue) => setActiveTab(newValue)}
@@ -377,7 +381,7 @@ export function TeeTimes() {
             p: 6, 
             textAlign: 'center', 
             borderRadius: 2,
-            boxShadow: theme.shadows.card 
+            boxShadow: theme.muiTheme.shadows[2] 
           }}
         >
           <Event sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
@@ -395,8 +399,8 @@ export function TeeTimes() {
               startIcon={<Add />}
               onClick={() => setCreateDialogOpen(true)}
               sx={{
-                background: theme.gradients.primary,
-                '&:hover': { background: theme.gradients.secondary }
+                background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                '&:hover': { background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' }
               }}
             >
               Schedule Tee Time
@@ -418,7 +422,7 @@ export function TeeTimes() {
                     display: 'flex',
                     flexDirection: 'column',
                     borderRadius: 2,
-                    boxShadow: theme.shadows.card
+                    boxShadow: theme.muiTheme.shadows[2]
                   }}>
                     <CardContent sx={{ flexGrow: 1 }}>
                       {/* Header with course name and actions */}
@@ -707,8 +711,8 @@ export function TeeTimes() {
             onClick={handleCreateTeeTime}
             variant="contained"
             sx={{
-              background: theme.gradients.primary,
-              '&:hover': { background: theme.gradients.secondary }
+              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              '&:hover': { background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' }
             }}
           >
             Create Tee Time
@@ -838,8 +842,8 @@ export function TeeTimes() {
             onClick={handleUpdateTeeTime}
             variant="contained"
             sx={{
-              background: theme.gradients.primary,
-              '&:hover': { background: theme.gradients.secondary }
+              background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              '&:hover': { background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)' }
             }}
           >
             Update Tee Time
@@ -847,5 +851,6 @@ export function TeeTimes() {
         </DialogActions>
       </Dialog>
     </Container>
+    </ThemeProvider>
   );
 }
