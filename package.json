@@ -15,7 +15,14 @@
     "test:debug": "npx playwright test --debug",
     "test:headed": "npx playwright test --headed --project=chromium",
     "test:report": "npx playwright show-report",
-    "test:ui": "npx playwright test --ui"
+    "test:ui": "npx playwright test --ui",
+    "mobile:sync": "npx cap sync",
+    "mobile:build": "npm run build && npx cap sync",
+    "ios:open": "npx cap open ios",
+    "ios:run": "npm run mobile:build && npx cap open ios",
+    "android:open": "npx cap open android",
+    "android:run": "npm run mobile:build && npx cap open android",
+    "mobile:clean": "rm -rf ios/App/App/public android/app/src/main/assets/public"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
@@ -41,6 +48,17 @@
     ]
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/app": "^7.1.0",
+    "@capacitor/camera": "^7.0.2",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/filesystem": "^7.1.4",
+    "@capacitor/geolocation": "^7.1.5",
+    "@capacitor/ios": "^7.4.4",
+    "@capacitor/keyboard": "^7.0.3",
+    "@capacitor/splash-screen": "^7.0.3",
+    "@capacitor/status-bar": "^7.0.3",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.1.0",
