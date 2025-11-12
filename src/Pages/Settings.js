@@ -22,7 +22,7 @@ import {
   getUserBuddies,
   removeBuddy,
   uploadProfilePicture
-} from '../firebase/database';
+} from '../firebase/platformDatabase';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
 import { gradientText } from '../theme';
@@ -194,25 +194,38 @@ function Settings() {
 
   const handleSave = async () => {
     try {
+      console.log('💾 Saving profile for user:', currentUser.uid);
+      console.log('💾 Form data:', formData);
+      
       setLoading(true);
       setError('');
       
       await updateUserProfile(currentUser.uid, formData);
+      console.log('✅ Profile updated in database');
+      
+      // Refresh profile from context
       await updateProfile();
+      console.log('✅ Profile refreshed in context');
+      
+      // Small delay to ensure state updates
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       setSuccess('Profile updated successfully!');
       setIsEditing(false);
       setTimeout(() => setSuccess(''), 3000);
       
     } catch (error) {
-      console.error('Error updating profile:', error);
-      setError('Failed to update profile. Please try again.');
+      console.error('❌ Error updating profile:', error);
+      console.error('❌ Error code:', error.code);
+      console.error('❌ Error message:', error.message);
+      setError(`Failed to update profile: ${error.message || 'Please try again.'}`);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
+    // Reset form to current profile data
     if (userProfile) {
       setFormData({
         displayName: userProfile.displayName || '',
@@ -228,16 +241,45 @@ function Settings() {
     setIsEditing(false);
   };
 
+  const handleEdit = () => {
+    // Re-populate form with latest profile data when entering edit mode
+    console.log('✏️ Entering edit mode, current userProfile:', userProfile);
+    if (userProfile) {
+      setFormData({
+        displayName: userProfile.displayName || '',
+        email: userProfile.email || '',
+        phone: userProfile.phone || '',
+        location: userProfile.location || '',
+        skillLevel: userProfile.skillLevel || '',
+        bio: userProfile.bio || '',
+        available: userProfile.available !== false,
+        notifications: userProfile.notifications !== false
+      });
+      console.log('✏️ Form data populated for editing');
+    }
+    setIsEditing(true);
+  };
+
   const handleRequestResponse = async (request, action) => {
     try {
+      console.log('🤝 Handling buddy request response:', { 
+        action, 
+        requestId: request.id,
+        from: request.fromUserId,
+        to: currentUser.uid
+      });
+      
       if (action === 'accepted') {
         await acceptBuddyRequest(request.id, request.fromUserId, currentUser.uid);
+        console.log('✅ Buddy request accepted');
         setSuccess(`You are now buddies with ${request.senderProfile?.displayName}!`);
       } else {
         await declineBuddyRequest(request.id);
+        console.log('✅ Buddy request declined');
         setSuccess('Request declined.');
       }
       
+      console.log('🔄 Reloading buddy requests and buddies...');
       await loadBuddyRequests();
       await loadBuddies();
       setTimeout(() => setSuccess(''), 3000);
@@ -380,7 +422,7 @@ function Settings() {
                     <Button
                       variant="contained"
                       startIcon={<Edit />}
-                      onClick={() => setIsEditing(true)}
+                      onClick={handleEdit}
                       sx={{
                         background: theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         borderRadius: 2,

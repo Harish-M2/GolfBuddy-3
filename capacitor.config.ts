@@ -6,8 +6,11 @@ const config: CapacitorConfig = {
   webDir: 'build',
   bundledWebRuntime: false,
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    allowNavigation: ['*'],
+    cleartext: true
   },
+  loggingBehavior: 'debug',
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,

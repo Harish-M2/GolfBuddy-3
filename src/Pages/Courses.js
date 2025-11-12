@@ -17,7 +17,7 @@ import {
   addFavoriteCourse, 
   removeFavoriteCourse, 
   getFavoriteCourses 
-} from '../firebase/database';
+} from '../firebase/platformDatabase';
 import { HoverCard } from '../Components/EnhancedComponents';
 import { gradientText } from '../theme';
 

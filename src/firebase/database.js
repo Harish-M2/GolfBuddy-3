@@ -21,8 +21,19 @@ export const getAllGolfBuddies = async () => {
     const querySnapshot = await getDocs(collection(db, 'users'));
     const buddies = [];
     querySnapshot.forEach((doc) => {
-      buddies.push({ id: doc.id, ...doc.data() });
+      const userData = { id: doc.id, ...doc.data() };
+      
+      // Filter out invalid/deleted user profiles
+      const isValid = userData && userData.email && userData.uid;
+      
+      if (isValid) {
+        buddies.push(userData);
+      } else {
+        console.log('⚠️  Filtering out invalid user profile:', userData?.uid || doc.id);
+      }
     });
+    
+    console.log(`📊 Found ${querySnapshot.size} total users, ${buddies.length} valid users`);
     return buddies;
   } catch (error) {
     throw error;
@@ -37,7 +48,16 @@ export const getFilteredGolfBuddies = async (skillLevel = '', location = '') => 
     let buddies = [];
     
     querySnapshot.forEach((doc) => {
-      buddies.push({ id: doc.id, ...doc.data() });
+      const userData = { id: doc.id, ...doc.data() };
+      
+      // Filter out invalid/deleted user profiles
+      const isValid = userData && userData.email && userData.uid;
+      
+      if (isValid) {
+        buddies.push(userData);
+      } else {
+        console.log('⚠️  Filtering out invalid user profile:', userData?.uid || doc.id);
+      }
     });
     
     // Apply filters client-side
@@ -72,13 +92,60 @@ export const getFilteredGolfBuddies = async (skillLevel = '', location = '') => 
 // Update user profile
 export const updateUserProfile = async (uid, profileData) => {
   try {
+    console.log('📝 [WEB] Updating user profile for:', uid);
+    console.log('📝 [WEB] Raw data to update:', JSON.stringify(profileData, null, 2));
+    
     const userRef = doc(db, 'users', uid);
-    await updateDoc(userRef, {
-      ...profileData,
-      updatedAt: new Date().toISOString()
-    });
+    
+    // Check if profile exists first
+    const docSnap = await getDoc(userRef);
+    
+    if (!docSnap.exists()) {
+      // Create new profile
+      console.log('📝 [WEB] Profile not found, creating new profile...');
+      await setDoc(userRef, {
+        uid: uid,
+        ...profileData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      console.log('✅ [WEB] Profile created successfully');
+      return;
+    }
+    
+    // Profile exists - filter out empty strings to preserve existing data
+    const existingData = docSnap.data();
+    console.log('📝 [WEB] Existing profile:', JSON.stringify(existingData, null, 2));
+    
+    const updateData = {};
+    
+    for (const [key, value] of Object.entries(profileData)) {
+      if (value !== undefined && value !== null) {
+        // For strings, only include if not empty
+        if (typeof value === 'string') {
+          // Always include displayName and email even if empty
+          if (key === 'displayName' || key === 'email' || value.trim() !== '') {
+            updateData[key] = value;
+          }
+        } else {
+          // Include booleans, numbers, objects, arrays
+          updateData[key] = value;
+        }
+      }
+    }
+    
+    // Always add updatedAt
+    updateData.updatedAt = new Date().toISOString();
+    
+    console.log('📝 [WEB] Filtered update data:', JSON.stringify(updateData, null, 2));
+    
+    // Update existing profile
+    await updateDoc(userRef, updateData);
+    console.log('✅ [WEB] Profile updated successfully');
+    
     return true;
   } catch (error) {
+    console.error('❌ Error updating profile:', error);
     throw error;
   }
 };
@@ -286,7 +353,36 @@ export const getUserBuddies = async (userId) => {
     if (buddyIds.length === 0) return [];
     
     const buddyProfiles = await Promise.all(
-      buddyIds.map(id => getUserProfile(id))
+      buddyIds.map(async (id) => {
+        try {
+          const profile = await getUserProfile(id);
+          
+          // Skip if profile doesn't exist or has no essential data
+          if (!profile || !profile.email) {
+            console.log('⚠️  Skipping invalid/deleted buddy profile:', id);
+            // Clean up orphaned buddy relationship
+            try {
+              await deleteDoc(doc(db, 'users', userId, 'buddies', id));
+              console.log('🧹 Cleaned up orphaned buddy:', id);
+            } catch (cleanupError) {
+              console.error('Error cleaning up orphaned buddy:', cleanupError);
+            }
+            return null;
+          }
+          
+          return profile;
+        } catch (error) {
+          console.error('Error fetching buddy profile:', id, error);
+          // Clean up on error
+          try {
+            await deleteDoc(doc(db, 'users', userId, 'buddies', id));
+            console.log('🧹 Cleaned up errored buddy:', id);
+          } catch (cleanupError) {
+            console.error('Error cleaning up errored buddy:', cleanupError);
+          }
+          return null;
+        }
+      })
     );
     
     return buddyProfiles.filter(profile => profile !== null);

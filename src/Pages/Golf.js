@@ -11,7 +11,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { getAllGolfBuddies, getFilteredGolfBuddies, sendBuddyRequest, getSentRequests } from '../firebase/database';
+import { getAllGolfBuddies, getFilteredGolfBuddies, sendBuddyRequest, getSentRequests } from '../firebase/platformDatabase';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { gradientText } from '../theme';
 
@@ -45,11 +45,28 @@ export function Golf() {
         getSentRequests(currentUser.uid)
       ]);
       
-      const validGolfers = users.filter(user => 
-        user.id !== currentUser?.uid && 
-        user.displayName && 
-        user.skillLevel
-      );
+      console.log(`🏌️ Golf page - Got ${users.length} users from getAllGolfBuddies`);
+      console.log(`🏌️ Current user ID:`, currentUser?.uid);
+      
+      const validGolfers = users.filter(user => {
+        const isCurrentUser = user.id === currentUser?.uid || user.uid === currentUser?.uid;
+        const hasDisplayName = !!user.displayName;
+        const hasSkillLevel = !!user.skillLevel;
+        const isValid = !isCurrentUser && hasDisplayName && hasSkillLevel;
+        
+        console.log(`🏌️ Filtering user ${user.id || user.uid}:`, {
+          displayName: user.displayName || '(missing)',
+          skillLevel: user.skillLevel || '(missing)',
+          isCurrentUser,
+          hasDisplayName,
+          hasSkillLevel,
+          passed: isValid
+        });
+        
+        return isValid;
+      });
+      
+      console.log(`🏌️ After filtering: ${validGolfers.length} valid golfers to display`);
       
       setGolfers(validGolfers);
       setFilteredGolfers(validGolfers);

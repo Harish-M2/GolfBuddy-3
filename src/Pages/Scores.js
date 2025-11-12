@@ -47,7 +47,7 @@ import {
   updateScorecard,
   deleteScorecard,
   getScorecardStats
-} from '../firebase/database';
+} from '../firebase/platformDatabase';
 
 export function Scores() {
   const { currentUser } = useAuth();

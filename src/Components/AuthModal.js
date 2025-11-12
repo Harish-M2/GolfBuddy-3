@@ -12,9 +12,10 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Login as LoginIcon, PersonAdd } from '@mui/icons-material';
-import { signIn, signUp } from '../firebase/auth';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AuthModal({ open, onClose, onAuthSuccess }) {
+  const { signInWithEmailPassword, createUserWithEmailPassword, isNative } = useAuth();
   const [tab, setTab] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,18 +52,35 @@ export default function AuthModal({ open, onClose, onAuthSuccess }) {
     try {
       if (tab === 0) {
         // Sign In
-        console.log('Attempting sign in...');
-        await signIn(formData.email, formData.password);
+        console.log(`🔐 Attempting sign in (${isNative ? 'Native' : 'Web'})...`);
+        await signInWithEmailPassword(formData.email, formData.password);
+        console.log('✅ Sign in successful!');
       } else {
         // Sign Up
-        console.log('Attempting sign up...');
+        console.log(`🔐 Attempting sign up (${isNative ? 'Native' : 'Web'})...`);
         if (formData.password !== formData.confirmPassword) {
           throw new Error('Passwords do not match');
         }
         if (formData.password.length < 6) {
           throw new Error('Password must be at least 6 characters');
         }
-        await signUp(formData.email, formData.password, formData.displayName);
+        
+        // Create user account
+        const user = await createUserWithEmailPassword(formData.email, formData.password);
+        console.log('✅ Account created successfully!');
+        
+        // Update profile with display name if provided
+        if (formData.displayName && user) {
+          console.log('📝 Updating display name...');
+          // For native, we need to update the profile separately
+          if (isNative) {
+            const { updateProfileNative } = await import('../firebase/nativeAuth');
+            await updateProfileNative({ displayName: formData.displayName });
+          } else {
+            const { updateProfile } = await import('firebase/auth');
+            await updateProfile(user, { displayName: formData.displayName });
+          }
+        }
       }
       // Call onAuthSuccess if provided, otherwise just close
       if (onAuthSuccess) {
@@ -71,8 +89,8 @@ export default function AuthModal({ open, onClose, onAuthSuccess }) {
         onClose && onClose();
       }
     } catch (error) {
-      console.error('Auth error:', error);
-      setError(error.message);
+      console.error('❌ Auth error:', error);
+      setError(error.message || 'Authentication failed. Please try again.');
     } finally {
       setLoading(false);
     }

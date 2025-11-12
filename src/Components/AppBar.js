@@ -28,9 +28,9 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
-import { useBuddyRequests } from '../hooks/useBuddyRequests';
-import { signOutUser } from '../firebase/auth';
-import { updateBuddyRequestStatus } from '../firebase/database';
+// import { useBuddyRequests } from '../hooks/useBuddyRequests'; // TEMP: Disabled
+// import { signOutUser } from '../firebase/auth'; // TEMP: Disabled - using AuthContext method
+// import { updateBuddyRequestStatus } from '../firebase/database'; // TEMP: Disabled
 import AuthModal from './AuthModal';
 import { DarkModeToggle } from './DarkModeToggle';
 
@@ -70,9 +70,17 @@ export default function ResponsiveAppBar() {
   const [authModalOpen, setAuthModalOpen] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser, userProfile } = useAuth();
+  
+  // Use real auth context
+  const { currentUser, userProfile, signOut: authSignOut, loading: authLoading } = useAuth();
   const { notifications, unreadCount, markAsRead, clearNotification } = useNotifications();
-  const { pendingCount } = useBuddyRequests(currentUser?.uid);
+  const pendingCount = 0; // TODO: Implement buddy requests
+
+  console.log('🎯 AppBar - Auth State:', { 
+    hasUser: !!currentUser, 
+    email: currentUser?.email,
+    loading: authLoading 
+  });
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -123,10 +131,13 @@ export default function ResponsiveAppBar() {
 
   const handleSignOut = async () => {
     try {
-      await signOutUser();
+      console.log('🚪 Signing out...');
+      await authSignOut();
+      console.log('✅ Signed out successfully');
       handleCloseUserMenu();
+      navigate('/');
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('❌ Sign out error:', error);
     }
   };
 
@@ -141,12 +152,8 @@ export default function ResponsiveAppBar() {
 
   const handleBuddyRequestResponse = async (requestId, status, event) => {
     event.stopPropagation();
-    try {
-      await updateBuddyRequestStatus(requestId, status);
-      clearNotification(requestId);
-    } catch (error) {
-      console.error('Error updating buddy request:', error);
-    }
+    // TEMP: Disabled for testing
+    console.log('Buddy request response disabled in test mode');
   };
 
   const getInitials = (name) => {

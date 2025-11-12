@@ -17,7 +17,7 @@ import {
   declineBuddyRequest,
   removeBuddy,
   getUserProfile
-} from '../firebase/database';
+} from '../firebase/platformDatabase';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
 import { gradientText } from '../theme';

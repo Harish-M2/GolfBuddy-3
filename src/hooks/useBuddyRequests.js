@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getBuddyRequests } from '../firebase/database';
+import { getBuddyRequests } from '../firebase/platformDatabase';
 
 export function useBuddyRequests(userId) {
   const [pendingCount, setPendingCount] = useState(0);

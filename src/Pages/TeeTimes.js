@@ -61,7 +61,7 @@ import {
   updateTeeTime,
   deleteTeeTime,
   getUserBuddies
-} from '../firebase/database';
+} from '../firebase/platformDatabase';
 
 export function TeeTimes() {
   const { currentUser } = useAuth();

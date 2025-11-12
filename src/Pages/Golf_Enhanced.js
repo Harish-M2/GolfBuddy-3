@@ -19,7 +19,7 @@ import {
   sendBuddyRequest, 
   getSentRequests,
   searchGolfBuddies 
-} from '../firebase/database';
+} from '../firebase/platformDatabase';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { gradientText } from '../theme';
 

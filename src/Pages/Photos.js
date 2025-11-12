@@ -11,7 +11,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { uploadGolfPhoto, getUserGolfPhotos, deleteGolfPhoto } from '../firebase/database';
+import { uploadGolfPhoto, getUserGolfPhotos, deleteGolfPhoto } from '../firebase/platformDatabase';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { HoverCard } from '../Components/EnhancedComponents';
 import { gradientText } from '../theme';
