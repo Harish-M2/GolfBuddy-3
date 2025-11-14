@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaGolfBall, FaChartLine, FaCalendarAlt, FaMapMarkerAlt, FaThermometerHalf, FaEye, FaWind, FaTint, FaCog, FaUser, FaTrophy } from 'react-icons/fa';
+import { FaGolfBall, FaChartLine, FaCalendarAlt, FaMapMarkerAlt, FaThermometerHalf, FaEye, FaWind, FaTint, FaCog, FaUser, FaTrophy, FaUsers, FaTimes, FaEnvelope, FaPhone, FaMapPin } from 'react-icons/fa';
 import { weatherService } from '../services/weatherService';
 import { useAuth } from '../contexts/AuthContext';
+import { getUserBuddies, getUserTeeTimes } from '../firebase/platformDatabase';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { userProfile } = useAuth();
+  const { userProfile, currentUser, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [buddies, setBuddies] = useState([]);
+  const [buddiesLoading, setBuddiesLoading] = useState(true);
+  const [selectedBuddy, setSelectedBuddy] = useState(null);
+  const [showBuddyModal, setShowBuddyModal] = useState(false);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   useEffect(() => {
+    // Don't fetch weather until we have the user profile loaded
+    if (!userProfile) {
+      console.log('Waiting for user profile to load...');
+      return;
+    }
+
     const fetchWeather = async () => {
       try {
         setLoading(true);
-        // Use user's location from profile, fallback to Los Angeles
-        const city = userProfile?.location || 'Los Angeles';
-        console.log('Fetching weather for city:', city);
+        setError(null);
+        // Use user's location from profile, fallback to Los Angeles only if location is not set
+        const city = userProfile.location || 'Los Angeles';
+        console.log('Fetching weather for city from profile:', city);
+        console.log('User profile location:', userProfile.location);
         const weatherData = await weatherService.getWeather(city);
         setWeather(weatherData);
       } catch (err) {
@@ -30,7 +45,97 @@ const Dashboard = () => {
     };
 
     fetchWeather();
-  }, [userProfile?.location]); // Re-fetch when location changes
+  }, [userProfile, userProfile?.location]); // Re-fetch when profile or location changes
+
+  // Fetch buddies
+  useEffect(() => {
+    const fetchBuddies = async () => {
+      console.log('🔍 Fetching buddies - Auth loading:', authLoading, 'User UID:', currentUser?.uid);
+      
+      // Wait for auth to finish loading
+      if (authLoading) {
+        console.log('⏳ Waiting for auth to finish loading...');
+        return;
+      }
+      
+      if (!currentUser?.uid) {
+        console.log('⚠️  No user UID, setting buddies to empty and loading to false');
+        setBuddies([]);
+        setBuddiesLoading(false);
+        return;
+      }
+      
+      try {
+        setBuddiesLoading(true);
+        console.log('📞 Calling getUserBuddies for user:', currentUser.uid);
+        const buddyList = await getUserBuddies(currentUser.uid);
+        console.log('✅ Buddies fetched:', buddyList?.length || 0, 'buddies');
+        setBuddies(buddyList || []);
+      } catch (err) {
+        console.error('❌ Error fetching buddies:', err);
+        setBuddies([]);
+      } finally {
+        setBuddiesLoading(false);
+        console.log('✅ Buddies loading complete');
+      }
+    };
+
+    fetchBuddies();
+  }, [currentUser, authLoading]);
+
+  // Fetch upcoming tee times
+  useEffect(() => {
+    const fetchTeeTimes = async () => {
+      console.log('📅 Fetching tee times - Auth loading:', authLoading, 'User UID:', currentUser?.uid);
+      
+      // Wait for auth to finish loading
+      if (authLoading) {
+        console.log('⏳ Waiting for auth to finish loading...');
+        return;
+      }
+      
+      if (!currentUser?.uid) {
+        console.log('⚠️  No user UID, setting events to empty');
+        setUpcomingEvents([]);
+        setEventsLoading(false);
+        return;
+      }
+      
+      try {
+        setEventsLoading(true);
+        console.log('📞 Calling getUserTeeTimes for user:', currentUser.uid);
+        const teeTimes = await getUserTeeTimes(currentUser.uid);
+        console.log('✅ Tee times fetched:', teeTimes?.length || 0, 'events');
+        
+        // Filter for upcoming events only
+        const now = new Date();
+        const upcoming = teeTimes.filter(event => {
+          const eventDateTime = new Date(`${event.date} ${event.time}`);
+          return eventDateTime >= now;
+        }).slice(0, 3); // Show only next 3 events
+        
+        setUpcomingEvents(upcoming);
+      } catch (err) {
+        console.error('❌ Error fetching tee times:', err);
+        setUpcomingEvents([]);
+      } finally {
+        setEventsLoading(false);
+        console.log('✅ Events loading complete');
+      }
+    };
+
+    fetchTeeTimes();
+  }, [currentUser, authLoading]);
+
+  const handleBuddyClick = (buddy) => {
+    setSelectedBuddy(buddy);
+    setShowBuddyModal(true);
+  };
+
+  const closeBuddyModal = () => {
+    setShowBuddyModal(false);
+    setSelectedBuddy(null);
+  };
 
   return (
     <div className="dashboard">
@@ -236,32 +341,198 @@ const Dashboard = () => {
               </h2>
             </div>
             <div className="card-body">
-              <div className="events-list">
-                <div className="event-item">
-                  <div className="event-date">
-                    <div className="event-day">22</div>
-                    <div className="event-month">MAR</div>
-                  </div>
-                  <div className="event-info">
-                    <h4>Club Championship</h4>
-                    <p>Riviera Country Club</p>
-                  </div>
+              {eventsLoading ? (
+                <div className="loading-state">
+                  <div className="loading-spinner"></div>
+                  <p>Loading events...</p>
                 </div>
-                <div className="event-item">
-                  <div className="event-date">
-                    <div className="event-day">28</div>
-                    <div className="event-month">MAR</div>
-                  </div>
-                  <div className="event-info">
-                    <h4>Weekly Group Round</h4>
-                    <p>Los Angeles Country Club</p>
-                  </div>
+              ) : upcomingEvents.length === 0 ? (
+                <div className="empty-state">
+                  <FaCalendarAlt className="empty-icon" />
+                  <p>No upcoming tee times scheduled</p>
+                  <button 
+                    className="find-buddies-btn"
+                    onClick={() => navigate('/tee-times')}
+                  >
+                    Schedule a Tee Time
+                  </button>
                 </div>
-              </div>
+              ) : (
+                <div className="events-list">
+                  {upcomingEvents.map((event) => {
+                    const eventDate = new Date(event.date);
+                    const day = eventDate.getDate();
+                    const month = eventDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+                    
+                    return (
+                      <div 
+                        key={event.id} 
+                        className="event-item"
+                        onClick={() => navigate('/tee-times')}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="event-date">
+                          <div className="event-day">{day}</div>
+                          <div className="event-month">{month}</div>
+                        </div>
+                        <div className="event-info">
+                          <h4>{event.courseName}</h4>
+                          <p>{event.time} • {event.courseAddress || 'No address provided'}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* My Golf Buddies */}
+          <div className="content-card">
+            <div className="card-header">
+              <h2 className="card-title">
+                <FaUsers className="card-icon" />
+                My Golf Buddies
+              </h2>
+            </div>
+            <div className="card-body">
+              {buddiesLoading ? (
+                <div className="loading-state">
+                  <div className="loading-spinner"></div>
+                  <p>Loading buddies...</p>
+                </div>
+              ) : buddies.length === 0 ? (
+                <div className="empty-state">
+                  <FaUsers className="empty-icon" />
+                  <p>No buddies connected yet</p>
+                  <button 
+                    className="find-buddies-btn"
+                    onClick={() => navigate('/golf')}
+                  >
+                    Find Golf Buddies
+                  </button>
+                </div>
+              ) : (
+                <div className="buddies-list">
+                  {buddies.slice(0, 5).map((buddy) => (
+                    <div 
+                      key={buddy.id} 
+                      className="buddy-item"
+                      onClick={() => handleBuddyClick(buddy)}
+                    >
+                      <div className="buddy-avatar">
+                        {buddy.photoURL ? (
+                          <img src={buddy.photoURL} alt={buddy.name} />
+                        ) : (
+                          <FaUser />
+                        )}
+                      </div>
+                      <div className="buddy-info">
+                        <h4>{buddy.name || buddy.displayName}</h4>
+                        <p className="buddy-location">
+                          <FaMapPin /> {buddy.location || 'Location not set'}
+                        </p>
+                        <p className="buddy-skill">Handicap: {buddy.skillLevel || 'N/A'}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {buddies.length > 5 && (
+                    <button 
+                      className="view-all-btn"
+                      onClick={() => navigate('/golf')}
+                    >
+                      View all {buddies.length} buddies
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
+
+      {/* Buddy Profile Modal */}
+      {showBuddyModal && selectedBuddy && (
+        <div className="modal-overlay" onClick={closeBuddyModal}>
+          <div className="buddy-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeBuddyModal}>
+              <FaTimes />
+            </button>
+            
+            <div className="buddy-modal-header">
+              <div className="buddy-modal-avatar">
+                {selectedBuddy.photoURL ? (
+                  <img src={selectedBuddy.photoURL} alt={selectedBuddy.name} />
+                ) : (
+                  <FaUser />
+                )}
+              </div>
+              <h2>{selectedBuddy.name || selectedBuddy.displayName}</h2>
+              <p className="buddy-modal-bio">{selectedBuddy.bio || 'Golf enthusiast'}</p>
+            </div>
+
+            <div className="buddy-modal-body">
+              <div className="buddy-detail">
+                <FaMapPin className="detail-icon" />
+                <div>
+                  <label>Location</label>
+                  <p>{selectedBuddy.location || 'Not specified'}</p>
+                </div>
+              </div>
+
+              <div className="buddy-detail">
+                <FaTrophy className="detail-icon" />
+                <div>
+                  <label>Skill Level / Handicap</label>
+                  <p>{selectedBuddy.skillLevel || 'Not specified'}</p>
+                </div>
+              </div>
+
+              {selectedBuddy.email && (
+                <div className="buddy-detail">
+                  <FaEnvelope className="detail-icon" />
+                  <div>
+                    <label>Email</label>
+                    <p>{selectedBuddy.email}</p>
+                  </div>
+                </div>
+              )}
+
+              {selectedBuddy.phone && (
+                <div className="buddy-detail">
+                  <FaPhone className="detail-icon" />
+                  <div>
+                    <label>Phone</label>
+                    <p>{selectedBuddy.phone}</p>
+                  </div>
+                </div>
+              )}
+
+              {selectedBuddy.availability && (
+                <div className="buddy-detail">
+                  <FaCalendarAlt className="detail-icon" />
+                  <div>
+                    <label>Availability</label>
+                    <p>{selectedBuddy.availability}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="buddy-modal-footer">
+              <button 
+                className="message-btn"
+                onClick={() => {
+                  closeBuddyModal();
+                  navigate('/golf');
+                }}
+              >
+                <FaEnvelope /> Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

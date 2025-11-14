@@ -494,7 +494,8 @@ export function Golf() {
                 item 
                 xs={12} 
                 sm={6} 
-                md={4} 
+                md={6}
+                lg={4} 
                 key={golfer.id}
                 sx={{
                   display: 'flex',
@@ -508,25 +509,26 @@ export function Golf() {
                 <Card
                   sx={{
                     width: '100%',
-                    height: 480,
+                    height: 340,
                     display: 'flex',
                     flexDirection: 'column',
                     background: (t) => t.palette.mode === 'dark' 
                       ? 'rgba(30, 30, 30, 0.95)' 
-                      : 'rgba(255, 255, 255, 0.95)',
+                      : 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(10px)',
                     border: (t) => t.palette.mode === 'dark'
                       ? '1px solid rgba(255, 255, 255, 0.1)'
-                      : '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: theme.muiTheme?.shadows[2] || '0 2px 8px rgba(0,0,0,0.1)',
+                      : '1px solid rgba(0, 0, 0, 0.08)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
                     borderRadius: 3,
-                    transition: 'all 0.3s ease-in-out',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     cursor: 'pointer',
                     overflow: 'hidden',
                     position: 'relative',
                     '&:hover': {
-                      boxShadow: theme.muiTheme?.shadows[12] || '0 8px 32px rgba(0,0,0,0.12)',
-                      transform: 'translateY(-4px) scale(1.01)',
+                      boxShadow: '0 12px 40px rgba(102, 126, 234, 0.25)',
+                      transform: 'translateY(-8px)',
+                      borderColor: 'rgba(102, 126, 234, 0.5)',
                     },
                     '&::before': {
                       content: '""',
@@ -535,9 +537,9 @@ export function Golf() {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
                       opacity: 0,
-                      transition: 'all 0.2s ease-in-out',
+                      transition: 'opacity 0.3s ease-in-out',
                     },
                     '&:hover::before': {
                       opacity: 1,
@@ -545,7 +547,7 @@ export function Golf() {
                   }}
                 >
                   <CardContent sx={{ 
-                    p: 3, 
+                    p: 2, 
                     position: 'relative', 
                     zIndex: 1,
                     display: 'flex',
@@ -553,7 +555,7 @@ export function Golf() {
                     flex: 1,
                   }}>
                     {/* Golfer Header */}
-                    <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                    <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
                       <Badge
                         overlap="circular"
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -561,8 +563,8 @@ export function Golf() {
                           golfer.available !== false ? (
                             <Box
                               sx={{
-                                width: 16,
-                                height: 16,
+                                width: 14,
+                                height: 14,
                                 borderRadius: '50%',
                                 bgcolor: muiTheme.palette.success.main,
                                 border: '2px solid white',
@@ -574,12 +576,13 @@ export function Golf() {
                         <Avatar
                           src={golfer.photoURL}
                           sx={{
-                            width: 80,
-                            height: 80,
-                            fontSize: '1.75rem',
+                            width: 60,
+                            height: 60,
+                            fontSize: '1.3rem',
                             fontWeight: 'bold',
                             bgcolor: getSkillColor(golfer.skillLevel),
-                            boxShadow: theme.muiTheme.shadows[4],
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                            border: '3px solid white',
                           }}
                         >
                           {!golfer.photoURL && getInitials(golfer.displayName)}
@@ -590,11 +593,13 @@ export function Golf() {
                         <Typography 
                           variant="h6" 
                           sx={{ 
-                            fontWeight: 700,
+                            fontWeight: 600,
+                            fontSize: '1.1rem',
                             mb: 0.5,
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
+                            letterSpacing: '-0.01em',
                           }}
                         >
                           {golfer.displayName}
@@ -607,15 +612,16 @@ export function Golf() {
                             bgcolor: getSkillColor(golfer.skillLevel),
                             color: 'white',
                             fontWeight: 600,
-                            fontSize: '0.75rem',
-                            height: 24,
-                            mb: 1,
+                            fontSize: '0.7rem',
+                            height: 22,
+                            mb: 0.75,
+                            letterSpacing: '0.02em',
                           }}
                         />
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                          <Star sx={{ fontSize: 16, color: '#FFD700' }} />
-                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          <Star sx={{ fontSize: 15, color: '#FFD700' }} />
+                          <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.85rem' }}>
                             {getRandomRating()}
                           </Typography>
                         </Box>
@@ -624,19 +630,19 @@ export function Golf() {
 
                     {/* Golfer Details */}
                     <Box sx={{ 
-                      mb: 1.5, 
+                      mb: 1.25, 
                       display: 'flex', 
                       flexDirection: 'column', 
-                      gap: 1,
+                      gap: 0.65,
                       flex: 1,
-                      minHeight: 120,
-                      maxHeight: 140,
+                      minHeight: 70,
+                      maxHeight: 85,
                       overflow: 'hidden',
                     }}>
-                      <Box sx={{ height: 24 }}>
+                      <Box sx={{ height: 22 }}>
                         {golfer.location && (
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <LocationOn sx={{ fontSize: 18, color: 'text.secondary' }} />
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                            <LocationOn sx={{ fontSize: 17, color: 'text.secondary' }} />
                             <Typography 
                               variant="body2" 
                               color="text.secondary"
@@ -644,6 +650,8 @@ export function Golf() {
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
+                                fontSize: '0.875rem',
+                                fontWeight: 500,
                               }}
                             >
                               {golfer.location}
@@ -652,15 +660,16 @@ export function Golf() {
                         )}
                       </Box>
 
-                      <Box sx={{ height: 24 }}>
+                      <Box sx={{ height: 22 }}>
                         {golfer.available !== false && (
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Schedule sx={{ fontSize: 18, color: muiTheme.palette.success.main }} />
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                            <Schedule sx={{ fontSize: 17, color: muiTheme.palette.success.main }} />
                             <Typography 
                               variant="body2" 
                               sx={{ 
                                 color: muiTheme.palette.success.main,
                                 fontWeight: 600,
+                                fontSize: '0.875rem',
                               }}
                             >
                               Available to play
@@ -680,7 +689,8 @@ export function Golf() {
                               WebkitBoxOrient: 'vertical',
                               overflow: 'hidden',
                               fontStyle: 'italic',
-                              lineHeight: 1.5,
+                              lineHeight: 1.4,
+                              fontSize: '0.8rem',
                             }}
                           >
                             "{golfer.bio}"
@@ -689,33 +699,33 @@ export function Golf() {
                       </Box>
                     </Box>
 
-                    <Divider sx={{ my: 2, mt: 'auto' }} />
+                    <Divider sx={{ my: 1.25, mt: 'auto' }} />
 
                     {/* Contact Info */}
                     <Box sx={{ 
                       display: 'flex', 
-                      gap: 1, 
-                      mb: 2, 
+                      gap: 0.75, 
+                      mb: 1.25, 
                       flexWrap: 'wrap',
-                      minHeight: 32,
+                      minHeight: 24,
                       alignItems: 'center',
                     }}>
                       {golfer.email && (
                         <Chip
-                          icon={<Email sx={{ fontSize: 16 }} />}
+                          icon={<Email sx={{ fontSize: 14 }} />}
                           label="Email"
                           size="small"
                           variant="outlined"
-                          sx={{ fontSize: '0.75rem' }}
+                          sx={{ fontSize: '0.65rem', height: 24, fontWeight: 500, letterSpacing: '0.02em' }}
                         />
                       )}
                       {golfer.phone && (
                         <Chip
-                          icon={<Phone sx={{ fontSize: 16 }} />}
+                          icon={<Phone sx={{ fontSize: 14 }} />}
                           label="Phone"
                           size="small"
                           variant="outlined"
-                          sx={{ fontSize: '0.75rem' }}
+                          sx={{ fontSize: '0.65rem', height: 24, fontWeight: 500, letterSpacing: '0.02em' }}
                         />
                       )}
                     </Box>
@@ -729,21 +739,32 @@ export function Golf() {
                       disabled={isRequestSent(golfer.id) || requestLoading[golfer.id]}
                       sx={{
                         background: isRequestSent(golfer.id) 
-                          ? theme.muiTheme.palette.text.disabled 
-                          : theme.muiTheme.palette.mode === 'dark' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                          : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         borderRadius: 2,
-                        py: 1.5,
+                        py: 1,
                         fontWeight: 600,
-                        boxShadow: theme.muiTheme.shadows[4],
+                        fontSize: '0.875rem',
+                        letterSpacing: '0.02em',
+                        boxShadow: isRequestSent(golfer.id) 
+                          ? '0 4px 12px rgba(16, 185, 129, 0.3)'
+                          : '0 4px 12px rgba(102, 126, 234, 0.4)',
+                        textTransform: 'none',
                         '&:hover': {
-                          boxShadow: theme.muiTheme.shadows[8],
+                          boxShadow: isRequestSent(golfer.id)
+                            ? '0 6px 20px rgba(16, 185, 129, 0.4)'
+                            : '0 6px 20px rgba(102, 126, 234, 0.5)',
                           transform: 'translateY(-2px)',
+                          background: isRequestSent(golfer.id) 
+                            ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
+                            : 'linear-gradient(135deg, #5568d3 0%, #6941a5 100%)',
                         },
                         '&:disabled': {
                           background: muiTheme.palette.text.disabled,
                           color: 'white',
+                          opacity: 0.7,
                         },
-                        transition: 'all 0.2s ease-in-out',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       }}
                     >
                       {requestLoading[golfer.id] 

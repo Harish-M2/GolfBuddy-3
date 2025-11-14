@@ -64,9 +64,9 @@ export const getUserTeeTimes = async (userId) => {
   return db.getUserTeeTimes(userId);
 };
 
-export const createTeeTime = async (data) => {
+export const createTeeTime = async (userId, teeTimeData) => {
   const db = await getDatabaseModule();
-  return db.createTeeTime(data);
+  return db.createTeeTime(userId, teeTimeData);
 };
 
 export const updateTeeTimeRSVP = async (teeTimeId, userId, status) => {

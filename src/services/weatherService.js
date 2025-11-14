@@ -5,6 +5,33 @@ const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY || 'demo';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 /**
+ * Check if API key is configured
+ */
+const isApiKeyConfigured = () => {
+  return API_KEY && API_KEY !== 'demo' && API_KEY !== 'your_api_key_here';
+};
+
+/**
+ * Get mock weather data as fallback
+ */
+const getMockWeatherData = (city) => {
+  console.log('🌤️ Weather Service: Using mock data (no API key configured)');
+  return {
+    temp: 22,
+    feelsLike: 23,
+    condition: 'Clear',
+    description: 'clear sky',
+    icon: '01d',
+    emoji: '☀️',
+    windSpeed: 8,
+    humidity: 55,
+    city: city,
+    isGoodGolfWeather: true,
+    golfMessage: 'Perfect weather for golf! Get out there!'
+  };
+};
+
+/**
  * Get weather by city name
  * @param {string} city - City name (e.g., "Los Angeles" or "Los Angeles,US")
  * @returns {Promise<Object>} Weather data
@@ -15,11 +42,18 @@ export const getWeatherByCity = async (city) => {
   }
 
   console.log('🌤️ Weather Service: Fetching weather for:', city);
-  console.log('🌤️ Weather Service: API Key exists?', API_KEY && API_KEY !== 'demo' ? 'YES' : 'NO (using demo)');
+  console.log('🌤️ Weather Service: API Key configured?', isApiKeyConfigured() ? 'YES' : 'NO');
+
+  // Return mock data if API key is not configured
+  if (!isApiKeyConfigured()) {
+    console.warn('⚠️ Weather Service: No API key configured. Using mock data. Add your API key to .env.local');
+    return getMockWeatherData(city);
+  }
 
   try {
     const url = `${BASE_URL}/weather?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`;
-    console.log('🌤️ Weather Service: Calling API...');
+    console.log('🌤️ Weather Service: Calling API URL:', url.replace(API_KEY, '***KEY***'));
+    console.log('🌤️ Weather Service: API Key (first 8 chars):', API_KEY.substring(0, 8) + '...');
     
     const response = await fetch(url);
 
@@ -28,22 +62,29 @@ export const getWeatherByCity = async (city) => {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('🌤️ Weather Service: API Error:', errorData);
+      console.error('🌤️ Full error response:', JSON.stringify(errorData));
       
       if (response.status === 404) {
+        console.error('🌤️ City not found:', city);
         throw new Error('City not found');
       }
       if (response.status === 401) {
-        throw new Error('Invalid API key - check your .env.local file');
+        console.warn('⚠️ Invalid API key. Using mock data as fallback.');
+        console.warn('⚠️ Check if API key is activated at https://home.openweathermap.org/api_keys');
+        return getMockWeatherData(city);
       }
       throw new Error(`Weather API error: ${errorData.message || 'Failed to fetch weather data'}`);
     }
 
     const data = await response.json();
     console.log('🌤️ Weather Service: Success! Temperature:', data.main.temp + '°C');
+    console.log('🌤️ Weather Service: Full data:', data);
     return formatWeatherData(data);
   } catch (error) {
     console.error('🌤️ Weather Service: Error fetching weather:', error.message);
-    throw error;
+    // Return mock data as fallback instead of throwing
+    console.warn('⚠️ Using mock weather data as fallback');
+    return getMockWeatherData(city);
   }
 };
 

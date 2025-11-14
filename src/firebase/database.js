@@ -341,8 +341,12 @@ export const declineBuddyRequest = async (requestId) => {
 // Get user's buddies
 export const getUserBuddies = async (userId) => {
   try {
+    console.log('🔍 getUserBuddies called for userId:', userId);
+    
     const buddiesRef = collection(db, 'users', userId, 'buddies');
     const querySnapshot = await getDocs(buddiesRef);
+    
+    console.log('📊 Found', querySnapshot.size, 'buddy connections');
     
     const buddyIds = [];
     querySnapshot.forEach((doc) => {
@@ -350,7 +354,12 @@ export const getUserBuddies = async (userId) => {
     });
     
     // Get full user profiles for each buddy
-    if (buddyIds.length === 0) return [];
+    if (buddyIds.length === 0) {
+      console.log('✅ No buddies found, returning empty array');
+      return [];
+    }
+    
+    console.log('📞 Fetching profiles for', buddyIds.length, 'buddies');
     
     const buddyProfiles = await Promise.all(
       buddyIds.map(async (id) => {
@@ -385,9 +394,13 @@ export const getUserBuddies = async (userId) => {
       })
     );
     
-    return buddyProfiles.filter(profile => profile !== null);
+    const validProfiles = buddyProfiles.filter(profile => profile !== null);
+    console.log('✅ Returning', validProfiles.length, 'valid buddy profiles');
+    return validProfiles;
   } catch (error) {
-    throw error;
+    console.error('❌ getUserBuddies error:', error);
+    // Return empty array instead of throwing
+    return [];
   }
 };
 

@@ -1,6 +1,6 @@
 // GolfBuddy Service Worker for PWA functionality
-const CACHE_NAME = 'golfbuddy-v1.0.0';
-const API_CACHE_NAME = 'golfbuddy-api-v1.0.0';
+const CACHE_NAME = 'golfbuddy-v1.0.1';
+const API_CACHE_NAME = 'golfbuddy-api-v1.0.1';
 
 // Assets to cache for offline functionality
 const STATIC_ASSETS = [
@@ -83,6 +83,12 @@ self.addEventListener('fetch', (event) => {
 
   // Skip chrome-extension and other non-http requests
   if (!url.protocol.startsWith('http')) {
+    return;
+  }
+
+  // BYPASS CACHE for hot-update files during development
+  if (url.pathname.includes('.hot-update.')) {
+    event.respondWith(fetch(request));
     return;
   }
 

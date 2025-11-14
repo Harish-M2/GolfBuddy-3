@@ -20,6 +20,7 @@ import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   GolfCourse, Home, PersonSearch, Map, Login, Logout, 
@@ -28,6 +29,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
+import { acceptBuddyRequest, declineBuddyRequest } from '../firebase/database';
 // import { useBuddyRequests } from '../hooks/useBuddyRequests'; // TEMP: Disabled
 // import { signOutUser } from '../firebase/auth'; // TEMP: Disabled - using AuthContext method
 // import { updateBuddyRequestStatus } from '../firebase/database'; // TEMP: Disabled
@@ -68,6 +70,7 @@ export default function ResponsiveAppBar() {
   const [anchorElSocial, setAnchorElSocial] = React.useState(null);
   const [anchorElGolf, setAnchorElGolf] = React.useState(null);
   const [authModalOpen, setAuthModalOpen] = React.useState(false);
+  const [processingRequest, setProcessingRequest] = React.useState({});
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -150,10 +153,41 @@ export default function ResponsiveAppBar() {
     handleCloseNotifications();
   };
 
-  const handleBuddyRequestResponse = async (requestId, status, event) => {
+  const handleBuddyRequestResponse = async (notification, status, event) => {
     event.stopPropagation();
-    // TEMP: Disabled for testing
-    console.log('Buddy request response disabled in test mode');
+    
+    if (!currentUser) {
+      console.error('No current user');
+      return;
+    }
+
+    const requestId = notification.id;
+    const fromUserId = notification.fromUserId;
+
+    setProcessingRequest(prev => ({ ...prev, [requestId]: status }));
+
+    try {
+      if (status === 'accepted') {
+        console.log('✅ Accepting buddy request:', requestId);
+        await acceptBuddyRequest(requestId, fromUserId, currentUser.uid);
+        console.log('✅ Buddy request accepted successfully');
+      } else {
+        console.log('❌ Declining buddy request:', requestId);
+        await declineBuddyRequest(requestId);
+        console.log('✅ Buddy request declined successfully');
+      }
+
+      // Clear the notification after processing
+      clearNotification(requestId);
+    } catch (error) {
+      console.error(`Error ${status === 'accepted' ? 'accepting' : 'declining'} buddy request:`, error);
+    } finally {
+      setProcessingRequest(prev => {
+        const newState = { ...prev };
+        delete newState[requestId];
+        return newState;
+      });
+    }
   };
 
   const getInitials = (name) => {
@@ -646,22 +680,34 @@ export default function ResponsiveAppBar() {
                             secondary={notification.message}
                           />
                           <ListItemSecondaryAction>
-                            <Box sx={{ display: 'flex', gap: 0.5 }}>
-                              <IconButton
-                                size="small"
-                                onClick={(e) => handleBuddyRequestResponse(notification.id, 'accepted', e)}
-                                sx={{ color: '#10b981' }}
-                              >
-                                <CheckCircle fontSize="small" />
-                              </IconButton>
-                              <IconButton
-                                size="small"
-                                onClick={(e) => handleBuddyRequestResponse(notification.id, 'rejected', e)}
-                                sx={{ color: '#ef4444' }}
-                              >
-                                <Close fontSize="small" />
-                              </IconButton>
-                            </Box>
+                            {processingRequest[notification.id] ? (
+                              <CircularProgress size={24} sx={{ mr: 1 }} />
+                            ) : (
+                              <Box sx={{ display: 'flex', gap: 0.5 }}>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => handleBuddyRequestResponse(notification, 'accepted', e)}
+                                  sx={{ 
+                                    color: '#10b981',
+                                    '&:hover': { backgroundColor: 'rgba(16, 185, 129, 0.1)' }
+                                  }}
+                                  title="Accept"
+                                >
+                                  <CheckCircle fontSize="small" />
+                                </IconButton>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => handleBuddyRequestResponse(notification, 'rejected', e)}
+                                  sx={{ 
+                                    color: '#ef4444',
+                                    '&:hover': { backgroundColor: 'rgba(239, 68, 68, 0.1)' }
+                                  }}
+                                  title="Decline"
+                                >
+                                  <Close fontSize="small" />
+                                </IconButton>
+                              </Box>
+                            )}
                           </ListItemSecondaryAction>
                         </ListItem>
                       ))}

@@ -178,19 +178,19 @@ export const AuthProvider = ({ children }) => {
       const { signInWithEmailPasswordNative } = await import('../firebase/nativeAuth');
       return await signInWithEmailPasswordNative(email, password);
     } else {
-      const { signInWithEmail } = await import('../firebase/auth');
-      return await signInWithEmail(email, password);
+      const { signIn } = await import('../firebase/auth');
+      return await signIn(email, password);
     }
   };
 
   // Function to create account with email/password
-  const createUserWithEmailPassword = async (email, password) => {
+  const createUserWithEmailPassword = async (email, password, displayName) => {
     if (isNative) {
       const { createUserWithEmailPasswordNative } = await import('../firebase/nativeAuth');
-      return await createUserWithEmailPasswordNative(email, password);
+      return await createUserWithEmailPasswordNative(email, password, displayName);
     } else {
-      const { signUpWithEmail } = await import('../firebase/auth');
-      return await signUpWithEmail(email, password);
+      const { signUp } = await import('../firebase/auth');
+      return await signUp(email, password, displayName);
     }
   };
 
@@ -200,8 +200,8 @@ export const AuthProvider = ({ children }) => {
       const { signOutNative } = await import('../firebase/nativeAuth');
       await signOutNative();
     } else {
-      const { signOut: webSignOut } = await import('../firebase/auth');
-      await webSignOut();
+      const { signOutUser } = await import('../firebase/auth');
+      await signOutUser();
     }
   };
 
